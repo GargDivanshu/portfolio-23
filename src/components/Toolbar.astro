@@ -1,0 +1,51 @@
+---
+
+---
+
+<div 
+style={{
+    backdropFilter: 'blur(18.75rem)',
+    border: '.0625rem solid rgba(255, 255, 255, .1)',
+}}
+class="toolbar bottom-5 w-fit mx-auto left-0 right-0 hidden md:flex text-[#D4D4D4] sticky gap-6 rounded-[.6rem] bg-[rgba(0, 0, 0, .5)] mix-blend-normal text-xs">
+    <ul class="p-4 hover:cursor-pointer">
+        <a href="#home">
+            Home
+        </a>
+    </ul>
+    <ul class="p-4 hover:cursor-pointer">
+        Contact
+    </ul>
+    <ul class="p-4 hover:cursor-pointer">
+        Skills
+    </ul>
+    <ul class="p-4 hover:cursor-pointer">
+        Something
+    </ul>
+    <ul class="bg-[#464646] rounded-r-[.6rem] p-4 hover:cursor-pointer">
+        Dashboard View
+    </ul>
+</div>
+
+<script>
+    const main = document.querySelector('.main');
+    const toolbar = document.querySelector('.toolbar');
+    
+    
+    const observer = new IntersectionObserver((entries) => {
+        const isIntersecting = entries[0].isIntersecting;
+    
+        if (isIntersecting) {
+            toolbar.style.display = 'none';
+            toolbar.style.transition = 'all 2s ease-in-out';
+        } else {
+            toolbar.style.display = 'flex';
+            toolbar.style.transition = 'all 2s ease-in-out';
+        }
+    }, {
+        threshold: 0.75
+    });
+    
+    observer.observe(main);
+    
+    </script>
