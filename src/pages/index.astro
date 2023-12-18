@@ -24,6 +24,40 @@ import Hero from "../components/Hero/index.astro";
   </nav>
   <Hero />
 
+  <div 
+  class="h-full md:w-[65%] w-full relative home">
+
+    <div class="w-[30vh] h-[30vh] bg-[#FF568D] blur-xl bottom-0 rounded-full absolute floating"></div>
+    <div class="w-[20vh] h-[20vh] blur-xl right-[0%] rounded-full absolute bg-[#AEDEFC] floating"></div>
+    <!-- <div class="w-[30vh] h-[30vh] blur-xl rounded-full absolute bg-[#FFDFDF] top-[50%] right-[0%]"></div> -->
+
+    <div class="md:w-4/5 w-full mx-auto absolute h-[10vh] left-0 right-0 inset-y-1/4 text-center">
+      Hey there, I'm <span class="font-bold">Divanshu</span>. I am a ...
+    </div>
+    <div
+    class="absolute h-[15vh] overflow-y-hidden md:w-4/5 w-full mx-auto inset-y-1/3 right-0 left-0 text-[#FFC600]">
+    <!-- overflow-y-hidden -->
+      <div id="intro" class="text-6xl font-bold mx-auto cursor-scale text-center py-2">
+        Developer
+      </div>
+      <div id="intro" class="text-6xl font-bold mx-auto cursor-scale text-center py-2">
+        Freelancer
+      </div>
+    </div>
+
+    <div class="absolute overflow-y-hidden h-[15vh] md:w-4/5 w-full mx-auto inset-y-1/2 right-0 left-0">
+      <div class="relative changingText">
+        <div class="absolute mx-auto cursor-scale left-0 right-0 text-center md:text-2xl text-xl upper">
+          <!-- writing code -->
+        </div>
+        <div class="absolute mx-auto left-0 right-0 cursor-scale text-center md:text-2xl text-xl -z-10 lower">
+          <!-- I have been breaking code -->
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
   <div class="rounded-[3rem] bg-[#2D2E34]">
     <div class="h-[100vh] max-w-[1940px] w-4/5 mx-auto relative">
       <div
