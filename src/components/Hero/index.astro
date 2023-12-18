@@ -1,11 +1,13 @@
 ---
-import Developer from '../components/Hero/Developer.astro'
-import Seo from '../components/Hero/Freelancer.astro'
+import Developer from './Developer.astro'
+import Freelancer from './Freelancer.astro'
+import Name from './Name.astro'
 ---
 
-<div class="relative space-y-1 overflow-hidden mt-20 h-screen">
+<div class="main relative space-y-1 overflow-hidden mt-20 h-screen">
     <Developer />
-    <Seo />
+    <Name/>
+    <Freelancer />
 </div>
 
 <style is:global>
