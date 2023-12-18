@@ -1,0 +1,49 @@
+---
+import Developer from '../components/Hero/Developer.astro'
+---
+
+<div class="relative space-y-1 overflow-hidden mt-20 h-screen">
+    <Developer />
+</div>
+
+<style is:global>
+    /* make a variable for the lineheight */
+    :root {
+        --lineheight: 8rem;
+    }
+    .banner_line::before,
+    .banner_line::after {
+        color: transparent;
+        -webkit-text-stroke: 0.15rem;
+        -webkit-text-stroke-color: #d5d5d57a;
+        position: absolute;
+        top: 0;
+        white-space: nowrap;
+        -webkit-transition: all 3s;
+        transition: all 0.5s;
+        z-index: -1;
+        pointer-events: none;
+    }
+    .banner_line::after {
+        left: 100%;
+    }
+    .banner_line::before {
+        right: 100%;
+    }
+    .banner_line {
+        position: relative;
+        padding: 0 2rem;
+        line-height: var(--lineheight);
+        @apply text-zinc-800;
+    }
+    .banner_line:hover:before {
+        color: #e4e4e4;
+        -webkit-text-stroke: 0.1rem;
+        -webkit-text-stroke-color: #e4e4e4;
+    }
+    .banner_line:hover:after {
+        color: #e4e4e4;
+        -webkit-text-stroke: 0.1rem;
+        -webkit-text-stroke-color: #e4e4e4;
+    }
+</style>
