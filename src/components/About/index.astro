@@ -1,0 +1,86 @@
+---
+
+---
+
+<div class="rounded-[3rem] bg-[#2D2E34]">
+    <div class="min-h-[100vh] h-fit max-w-[1940px] w-4/5 mx-auto relative bg-[url('bgpng.png')] bg-cover">
+      <div
+        style={{
+          font: 'Inter',
+        }}
+        id="revealType"
+        class="md:text-[1.9rem] text-[1.4rem] font-normal break-words text-wrap m-auto top-0 bottom-0 left-0 right-0 absolute h-fit w-[90%] text-center text-white revealType"
+      >
+      Divanshu, an adept full-stack developer based in India, brings over 2 years of experience crafting dynamic web applications. With a passion for merging beauty and simplicity, his goal is to empower businesses to scale seamlessly. Explore Divanshu's portfolio for a glimpse into the intersection of innovation and functionality. 
+      Ideal for freelance collaborations and a valuable asset for tech recruiters.
+      </div>
+    </div>
+  </div>
+
+
+  <script is:inline >
+    import { annotate, annotationGroup } from 'rough-notation';
+
+    const freelance = annotate(document.querySelector('highlight'), {type: 'highlight', color: '#F59E0B'});
+    freelance.show();
+  </script>
+
+  <style lang="scss">
+@charset "UTF-8";
+ 
+//  @import'./fonts.scss';
+//  @import'./variables.scss';
+  // .gradBody {
+  //   &::before, &::after {
+	// 	position: fixed;
+	// 	inset: 0;
+	// 	z-index: -1;
+	// 	--grad: 
+	// 		radial-gradient(at 25%, 
+	// 				red, #{rgba(red, .2)} 50%, transparent 70%);
+	// 	--mask: var(--grad), var(--grad), var(--grad);
+	// 	-webkit-mask: var(--mask);
+	// 	-webkit-mask-composite: source-in;
+	// 					mask: var(--mask);
+	// 					mask-composite: intersect;
+	// 	mix-blend-mode: color;
+  // }
+
+  // &::before {
+	// 	background: #000;
+	// 	filter: url(#f)
+	// }
+	
+	// &::after {
+	// 	background: linear-gradient(90deg, purple, navy 20%, aqua);
+	// }
+  // }
+
+  .gradBody::before,
+.gradBody::after {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  --grad: radial-gradient(at 25%, red, rgba(red, 0.2) 50%, transparent 70%);
+  --mask: var(--grad), var(--grad), var(--grad);
+  -webkit-mask: var(--mask);
+  -webkit-mask-composite: source-in;
+  mask: var(--mask);
+  mask-composite: intersect;
+  mix-blend-mode: color;
+  content: '';
+}
+
+.gradBody::before {
+  background: #000;
+  filter: url(#f);
+}
+
+.gradBody::after {
+  background: linear-gradient(90deg, purple, navy 20%, aqua);
+}
+
+
+  
+
+  </style>

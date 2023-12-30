@@ -11,17 +11,26 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.3.1",
-    "@astrojs/react": "^3.0.5",
+    "@astrojs/react": "^3.0.8",
     "@astrojs/tailwind": "^5.0.2",
-    "@types/react": "^18.2.37",
-    "@types/react-dom": "^18.2.15",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
     "astro": "^3.5.5",
     "gsap": "^3.12.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-terminal-ui": "^1.2.0",
+    "rough-notation": "^0.5.1",
     "sheryjs": "^1.0.0-beta.0.1.7",
     "split-type": "^0.3.4",
     "tailwindcss": "^3.0.24",
+    "termynal": "^0.0.4",
     "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "sass": "^1.69.6",
+    "stylelint": "^16.1.0",
+    "stylelint-config-recommended-scss": "^14.0.0",
+    "stylelint-config-standard": "^36.0.0"
   }
 }
