@@ -2,8 +2,13 @@
 
 ---
 
-<div class="rounded-[3rem] bg-[#2D2E34]">
-    <div class="min-h-[100vh] h-fit max-w-[1940px] w-4/5 mx-auto relative bg-[url('bgpng.png')] bg-cover">
+<div 
+style={{
+  background: 'linear-gradient(129deg, #33383D 0%, #323232 100%)',
+}}
+class="rounded-[3rem]">
+<!-- bg-[url('bgpng.png')] bg-cover -->
+    <div class="min-h-[100vh] h-fit max-w-[1940px] w-4/5 mx-auto relative ">
       <div
         style={{
           font: 'Inter',
@@ -25,62 +30,29 @@
     freelance.show();
   </script>
 
-  <style lang="scss">
-@charset "UTF-8";
- 
-//  @import'./fonts.scss';
-//  @import'./variables.scss';
-  // .gradBody {
-  //   &::before, &::after {
-	// 	position: fixed;
-	// 	inset: 0;
-	// 	z-index: -1;
-	// 	--grad: 
-	// 		radial-gradient(at 25%, 
-	// 				red, #{rgba(red, .2)} 50%, transparent 70%);
-	// 	--mask: var(--grad), var(--grad), var(--grad);
-	// 	-webkit-mask: var(--mask);
-	// 	-webkit-mask-composite: source-in;
-	// 					mask: var(--mask);
-	// 					mask-composite: intersect;
-	// 	mix-blend-mode: color;
-  // }
-
-  // &::before {
-	// 	background: #000;
-	// 	filter: url(#f)
-	// }
-	
-	// &::after {
-	// 	background: linear-gradient(90deg, purple, navy 20%, aqua);
-	// }
-  // }
-
-  .gradBody::before,
-.gradBody::after {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  --grad: radial-gradient(at 25%, red, rgba(red, 0.2) 50%, transparent 70%);
-  --mask: var(--grad), var(--grad), var(--grad);
-  -webkit-mask: var(--mask);
-  -webkit-mask-composite: source-in;
-  mask: var(--mask);
-  mask-composite: intersect;
-  mix-blend-mode: color;
-  content: '';
-}
-
-.gradBody::before {
-  background: #000;
-  filter: url(#f);
-}
-
-.gradBody::after {
-  background: linear-gradient(90deg, purple, navy 20%, aqua);
-}
-
-
   
 
-  </style>
+<script>
+  import gsap from 'gsap'
+  import SplitType from 'split-type';
+  gsap.registerPlugin(ScrollTrigger);
+
+  const splitTypes = document.querySelectorAll(".revealType");
+  splitTypes.forEach((char) => {
+    const text = new SplitType(char, { types: "chars" });
+
+
+    gsap.from(text.chars, {
+      scrollTrigger: {
+        trigger: char,
+        start: "top 75%",
+        end: "top 20%",
+        scrub: true,
+        markers: false,
+        toggleActions: "play play reverse reverse",
+      },
+      opacity: 0.2,
+      stagger: 0.1,
+    });
+  });
+  </script>

@@ -7,9 +7,10 @@ import Stack from "../components/Stack/index.astro";
 import About from "../components/About/index.astro";
 import Experience from '../components/Experience/index.astro'
 import Navbar from '../components/Navbar/index.astro'
+import Contact from '../components/Contact/index.astro'
 ---
 
-<!-- <link rel="stylesheet" href="https://unpkg.com/sheryjs/dist/Shery.css" /> -->
+
 <Layout title="Welcome to Astro.">
   <div class="cursor"></div>
   <Navbar/>
@@ -36,18 +37,18 @@ import Navbar from '../components/Navbar/index.astro'
   style={{
     font: 'Inter',
   }}
-    class="h-fit w-[100%] mx-auto relative flex gallery align-middle justify-center"
+    class="h-fit w-[100%] mx-auto relative hidden md:flex gallery align-middle justify-center"
   >
     <div class="left h-fit w-1/2 text-white">
 
 
-      <div class="h-[100vh] colorBox text-[#1A1A1A]" data-color="#FAE1EE">
+      <div class="h-[101vh] colorBox text-[#1A1A1A]" data-color="#B9B5F5">
         <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
-         <div class="text-left text-textPink align-middle items-center my-auto">
+         <div class="text-left text-[#4F46E5] align-middle items-center my-auto">
           <h1 class="text-[1.9em] font-base my-auto">Blithe Chat App</h1>
           <div class="my-auto">
             <div class="flex flex-col">
-            <p class="text-blackPrimary/80">
+            <p class="text-[#4F46E5]/80">
               A peer-to-peer instant real-time messaging application with user authentication, enabling seamless user search, friend
 requests, and efficient communication
             </p>
@@ -58,13 +59,13 @@ requests, and efficient communication
       </div>
 
 
-      <div class="h-[100vh] colorBox" data-color="#E0F0FF">
+      <div class="h-[100vh] colorBox" data-color="#CDE2E1">
         <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
-          <div class="text-left text-textBlue align-middle items-center my-auto">
+          <div class="text-left text-[#64A6A3] align-middle items-center my-auto">
            <h1 class="text-[1.9em] font-base my-auto">Analytical Dashboard</h1>
            <div class="my-auto">
              <div class="flex flex-col">
-             <p class="text-blackPrimary/80">
+             <p class="text-[#64A6A3]/80">
                A dashboard that provides a comprehensive overview of the company's performance, enabling the user to analyze the data
              </p>
            </div>
@@ -73,13 +74,13 @@ requests, and efficient communication
          </div>
       </div>
 
-      <div class="h-[100vh] colorBox cursor-scale" data-color="#FFEDE0"> 
+      <div class="h-[100vh] colorBox cursor-scale" data-color="#FEEAEE"> 
         <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
-          <div class="text-left text-textOrange align-middle items-center my-auto">
+          <div class="text-left text-[#F894B0] align-middle items-center my-auto">
            <h1 class="text-[1.9em] font-base my-auto">Blog App</h1>
            <div class="my-auto">
              <div class="flex flex-col">
-             <p class="text-blackPrimary/80">
+             <p class="text-[#F894B0]/80">
               Developed a modern Blog App leveraging GraphQL and GraphCMS to empower administrators with effortless con-
               tent management and engage users through commenting functionality.
              </p>
@@ -93,31 +94,44 @@ requests, and efficient communication
     </div>
 
 
-    <div class="right h-[100vh] w-1/2 relative pin-panel">
+    <div class="right h-[100vh] w-1/2 relative screen rounded-[3rem]">
       <div
-        class="bg-white rounded-[3rem] absolute top-0 bottom-0 h-[80vh] w-[90%] m-auto leftGallery "
+        class="absolute top-0 bottom-0 h-[60vh] w-[90%] m-auto overflow-hidden rounded-[3rem]"
       >
-        <div class="p-[10%] rounded-[3rem] h-full w-full border-inherit flex flex-col vertImg ">
-          <section class=" bg-red-600 min-w-[45vw] translate-x-[-5vw] min-h-[80vh] translate-y-[-10vh] rounded-[3rem] card1">
-
+        <div class="p-[10%] rounded-[1.9rem] h-full w-full border-inherit flex flex-col smain">
+          <section class="py-2 bg-[#4F46E5] min-w-[35vw] translate-x-[-5vw] h-[60vh] translate-y-[-10vh] rounded-[3rem] card1 z-10 relative">
+            <img 
+            src="/blithe/home.png"
+            class="rounded-[1rem] aspect-auto w-[90%] m-auto bg-cover bg-center absolute top-0 bottom-0 left-0 right-0"
+            />
           </section>
 
-          <section class=" bg-green-600 min-w-[45vw] translate-x-[-5vw] min-h-[80vh] translate-y-[-10vh] rounded-[3rem] card2">
-
+          <section class="py-2 bg-[#64A6A3] min-w-[35vw] translate-x-[-5vw] h-[60vh] translate-y-[-10vh] rounded-[3rem] card2 z-20">
+            <img 
+            src="/dashboard/home.png"
+            class="rounded-[1rem] aspect-auto w-[90%] m-auto bg-cover bg-center absolute top-0 bottom-0 left-0 right-0"
+            />
           </section>
 
-          <section class=" bg-blue-600 min-w-[45vw] translate-x-[-5vw] min-h-[80vh] translate-y-[-10vh] rounded-[3rem] card3">
-
+          <section class="py-2 bg-[#F894B0] min-w-[35vw] translate-x-[-5vw] h-[60vh] translate-y-[-10vh] rounded-[3rem] card3 z-30">
+            <img 
+            src="/blog/home.png"
+            class="rounded-[1rem] aspect-auto w-[90%] m-auto bg-cover bg-center absolute top-0 bottom-0 left-0 right-0"
+            />
           </section>
         </div>
       </div>
     </div>
   </div>
-  <div class="endGallery"></div>
+
+  <div class="flex md:hidden">
+
+  </div>
+
   <Experience />
   
-    <Stack />
-  
+    <!-- <Stack /> -->
+  <Contact />
 
   
   <Toolbar />
@@ -128,18 +142,6 @@ requests, and efficient communication
   is:inline
   src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
-<script
-  is:inline
-  src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.27/dist/lenis.min.js"
-></script>
-<!-- Scroll Trigger is needed for Scroll Effects -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" ></script> -->
-
-<!-- Three.js is needed for 3d Effects -->
-<script
-  is:inline
-  src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.155.0/three.min.js"
-></script>
 
 <!-- ControlKit is needed for Debug Panel -->
 <script
@@ -155,10 +157,6 @@ requests, and efficient communication
 <script type="text/javascript">
   var cursor = document.querySelector(".cursor"),
     cursorScale = document.querySelectorAll(".cursor-scale"),
-    changeText = document.querySelector(".changingText"),
-    upper = document.querySelector(".upper"),
-    lower = document.querySelector(".lower"),
-    intro = changeText.querySelectorAll("div"),
     mouseX = 0,
     mouseY = 0;
 
@@ -211,143 +209,54 @@ requests, and efficient communication
 </script>
 
 
+<!-- Project section animation -->
 <script>
   import gsap from 'gsap'
 
   gsap.registerPlugin(ScrollTrigger);
+  const root = document.documentElement;
 
-const cards = gsap.utils.toArray(".vertImg section");
-const spacer = 20;
+  ScrollTrigger.create({
+  trigger: ".gallery",
+  start: "top top",
+  end: "+=33% top",
+  onUpdate: (self) => {
+    console.log(self.progress);
+    root.style.setProperty("--dos-inset", (1 - self.progress) * 100 + "%");
+  },
+  pin: ".card1",
+});
 
 ScrollTrigger.create({
-  trigger: '.card1',
-  start: 'center center',
-  markers: true,
-  pin: '.card1',
-})
-// const tl = gsap.timeline()
-// tl.from('card1', {
-//   yPercent: -100,
-// }).from('card2', {
-//   yPercent: -100,
-// }).from('card3', {
-//   yPercent: -100,
-// })
+  trigger: ".gallery",
+  start: "33% top",
+  end: "66% top",
+  onUpdate: (self) => {
+    root.style.setProperty("--tres-inset", (1 - self.progress) * 100 + "%");
+  },
+});
 
-// ScrollTrigger.create({
-//   trigger: '.gallery',
-//   animation: tl,
-//   start: 'top top',
-//   end: 'bottom bottom',
-//   scrub: true,
-// })
+ScrollTrigger.create({
+  trigger: ".gallery",
+  start: "top top",
+  end: "+=66% top",
+  pin: ".card2",
+});
 
-// gsap.to(cards, {
-//   yPercent: -100,
-//   ease: 'none',
-//   scrollTrigger: {
-//     trigger: '.left',
-//   }
-// })
-
-// gsap.to(cards, {
-//   scrollTrigger: '.gallery',
-//   y: -1*document.querySelector('.right').offsetHeight,
-// })
-
-
-
-// cards.forEach((card, index) => {
-//   ScrollTrigger.create({
-//     trigger: card,
-//     start: `top-=${index * spacer} top+=10px`,
-//     endTrigger: ".pin-panel",
-//     end: `bottom top+=${200 + cards.length * spacer}`,
-//     pin: true,
-//     pinSpacing: false,
-//     markers: true,
-//     id: "card-pin",
-//     invalidateOnRefresh: true
-//   });
-// });
-
-
-  // gsap.registerPlugin(ScrollTrigger);
-  // gsap.to('.right', {
-  //   ScrollTrigger: {
-  //     trigger: 'gallery',
-  //     top: 'top top',
-  //     end: 'bottom bottom',
-  //   }, 
-  //   y: -document.querySelector('.right').offsetHeight,
-  // })
-//   const vertImg = gsap.utils.toArray(".vertImg")
-//   const spacer = 20
-//   const leftGallery = document.querySelector(".gallery")
-
-//   vertImg.forEach((card, index) => {
-  
-//   ScrollTrigger.create({
-//     trigger: '.gallery',
-//     // start: `top-=${index * spacer} top+=10px`,
-//     endTrigger: '.endGallery',
-//     // end: `bottom top+=${200 + (vertImg.length * spacer)}`,
-//     // pin: true,
-//     // pinSpacing: false,
-//     markers: true,
-//    // id: 'card-pin',
-//     invalidateOnRefresh: true,
-//   });
-// });
-  
-
-
+ScrollTrigger.create(
+  {
+  trigger: ".gallery",
+  start: "top top",
+  end: "+=80% top",
+  pin: ".card3",
+});
 </script>
+
+
+
+<!-- Lenis script -->
 <script>
-  import gsap from 'gsap'
-  import SplitType from 'split-type';
-  
-
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  const splitTypes = document.querySelectorAll(".revealType");
-  splitTypes.forEach((char) => {
-    const text = new SplitType(char, { types: "chars" });
-
-
-    gsap.from(text.chars, {
-      scrollTrigger: {
-        trigger: char,
-        start: "top 75%",
-        end: "top 20%",
-        scrub: true,
-        markers: false,
-        toggleActions: "play play reverse reverse",
-      },
-      opacity: 0.2,
-      stagger: 0.1,
-      // scaleY: 0,
-      // y: -20,
-      // transformOrigin: 'bottom',
-      // opacity: 0.2,
-      // stagger: 0.1
-    });
-  });
-
-  // ScrollTrigger.create({
-  //   trigger: ".gallery",
-  //   start: "top top",
-  //   end: "bottom bottom",
-  //   // scrub: true,
-  //   pin: ".right",
-  //   // markers: true,
-  //   // toggleActions: 'play play reverse reverse'
-  // });
-  
-  
-
-
+  import Lenis from '@studio-freight/lenis'
   const lenis = new Lenis();
 
   function raf(time) {
@@ -359,6 +268,7 @@ ScrollTrigger.create({
 </script>
 
 <script>
+  import gsap from 'gsap'
   const coloredBoxes = document.querySelectorAll('.colorBox');
 
 window.addEventListener('scroll', () => {
@@ -382,10 +292,7 @@ window.addEventListener('scroll', () => {
   main {
     margin: auto;
     padding: 1rem;
-    /* width: 800px; */
-    /* max-width: calc(100% - 2rem); */
     color: white;
-    /* font-size: 20px; */
     line-height: 1.6;
   }
   .astro-a {
@@ -398,10 +305,7 @@ window.addEventListener('scroll', () => {
     z-index: -1;
   }
   h1 {
-    /* font-size: 4rem; */
-    /* font-weight: 700; */
     line-height: 1;
-    /* text-align: center; */
     margin-bottom: 1em;
   }
   .text-gradient {
@@ -469,6 +373,29 @@ window.addEventListener('scroll', () => {
     margin-left: 30px;
     margin-top: 5px;
   }
+  .card1 {
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  clip-path: inset(0 0 0 0);
+  position: absolute;
+}
+
+.card2 {
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  clip-path: inset(var(--dos-inset) 0 0 0);
+  position: absolute;
+}
+
+.card3 {
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  clip-path: inset(var(--tres-inset) 0 0 0);
+  position: absolute;
+}
 
   @keyframes floating {
     0% {
@@ -481,24 +408,4 @@ window.addEventListener('scroll', () => {
       transform: translate(0, -0px);
     }
   }
-  /* .upper::before{
-	opacity: 1;
-	content: "writing code";
-	mix-blend-mode: difference;
-}
-.changingText:hover .upper {
-	opacity: 0;
-	mix-blend-mode: difference;
-}
-
-.lower::before{
-	opacity: 0;
-	content: "I have been breaking code";
-	mix-blend-mode: difference;
-}
-.changingText:hover .lower {
-	opacity: 1;
-	content: "I have been breaking code";
-	mix-blend-mode: difference;
-} */
 </style>
