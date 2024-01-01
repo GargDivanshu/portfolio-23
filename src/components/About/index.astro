@@ -3,10 +3,12 @@
 ---
 
 <div 
+data-title="About Me"
+data-titleColor="#FEFEFE"
 style={{
   background: 'linear-gradient(129deg, #33383D 0%, #323232 100%)',
 }}
-class="rounded-[3rem]">
+class="rounded-[3rem] colorBox">
 <!-- bg-[url('bgpng.png')] bg-cover -->
     <div class="min-h-[100vh] h-fit max-w-[1940px] w-4/5 mx-auto relative ">
       <div
@@ -24,7 +26,7 @@ class="rounded-[3rem]">
 
 
   <script is:inline >
-    import { annotate, annotationGroup } from 'rough-notation';
+    import { annotate } from 'rough-notation';
 
     const freelance = annotate(document.querySelector('highlight'), {type: 'highlight', color: '#F59E0B'});
     freelance.show();
@@ -39,7 +41,7 @@ class="rounded-[3rem]">
 
   const splitTypes = document.querySelectorAll(".revealType");
   splitTypes.forEach((char) => {
-    const text = new SplitType(char, { types: "chars" });
+    const text = new SplitType(char as HTMLElement, { types: "chars" });
 
 
     gsap.from(text.chars, {

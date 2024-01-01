@@ -6,13 +6,50 @@
     style={{
       borderBottom: ".0625rem solid rgba(255, 255, 255, .1)",
     }}
-    class="flex max-w-[1940px] w-4/5 mx-auto justify-between text-white p-4 top-0 sticky z-100"
+    class="flex max-w-[1940px] w-4/5 mx-auto justify-between p-4 top-0 sticky z-50"
   >
-    <div>Divanshu</div>
-    <ul class="flex gap-4">
+    <div 
+    id="title"
+    class="mx-auto title">
+  
+  </div>
+    <!-- <ul class="flex gap-4">
       <li>Contact</li>
-      <!-- <li>
-				Blog
-			</li> -->
-    </ul>
+    </ul> -->
   </nav>
+
+<style>
+  .title::before{
+    /* clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); */
+    content: "";
+  }
+  .title::after{
+    content: "";
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: 0.1rem;
+    line-height: 1.5rem;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    text-transform: uppercase;
+  }
+  .titleChar {
+    transform: translateY(115px);
+    transition: transform .5s;
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import SplitType from "split-type";
+
+  const titleText = new SplitType('#title')
+  console.log(titleText.chars)
+
+  gsap.to('.titleChar', {
+            y: 0,
+            stagger: 0.05,
+            delay: 0.2,
+            duration: .1
+        })
+
+</script>

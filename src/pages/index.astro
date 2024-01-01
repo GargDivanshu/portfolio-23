@@ -1,30 +1,27 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card.astro";
 import Toolbar from "../components/Toolbar.astro";
 import Hero from "../components/Hero/index.astro";
-import Stack from "../components/Stack/index.astro";
 import About from "../components/About/index.astro";
 import Experience from '../components/Experience/index.astro'
 import Navbar from '../components/Navbar/index.astro'
 import Contact from '../components/Contact/index.astro'
+import MobileViewProjects from '../components/Projects/index.astro'
 ---
 
 
-<Layout title="Welcome to Astro.">
+<Layout title="Portfolio | Divanshu">
   <div class="cursor"></div>
   <Navbar/>
   <Hero />
 
-  <div 
+  <!-- <div 
   class="h-full md:w-[65%] w-full relative home">
-
-
     <div class="absolute overflow-y-hidden h-[15vh] md:w-4/5 w-full mx-auto inset-y-1/2 right-0 left-0">
       <div class="relative changingText">
       </div>
     </div>
-  </div>
+  </div> -->
 
  <About/>
 
@@ -32,101 +29,113 @@ import Contact from '../components/Contact/index.astro'
 
   
 
+ <div
+ style={{
+   font: 'Inter',
+ }}
+   class="h-fit w-[100%] mx-auto relative hidden md:flex gallery align-middle justify-center"
+ >
+   <div 
+   class="left h-fit w-1/2 text-white">
 
-  <div
-  style={{
-    font: 'Inter',
-  }}
-    class="h-fit w-[100%] mx-auto relative hidden md:flex gallery align-middle justify-center"
-  >
-    <div class="left h-fit w-1/2 text-white">
+
+     <div 
+     data-title="Projects"
+     class="h-[101vh] colorBox text-[#1A1A1A]" 
+     data-color="#B9B5F5"
+     data-titleColor="#4F46E5"
+     >
+       <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
+        <div class="text-left text-[#4F46E5] align-middle items-center my-auto">
+         <h1 class="text-[1.9em] font-base my-auto">Blithe Chat App</h1>
+         <div class="my-auto">
+           <div class="flex flex-col">
+           <p class="text-[#4F46E5]/80">
+             A peer-to-peer instant real-time messaging application with user authentication, enabling seamless user search, friend
+requests, and efficient communication
+           </p>
+         </div>
+         </div>
+       </div>
+       </div>
+     </div>
 
 
-      <div class="h-[101vh] colorBox text-[#1A1A1A]" data-color="#B9B5F5">
-        <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
-         <div class="text-left text-[#4F46E5] align-middle items-center my-auto">
-          <h1 class="text-[1.9em] font-base my-auto">Blithe Chat App</h1>
+     <div 
+     data-title="Projects"
+     class="h-[100vh] colorBox" 
+     data-color="#CDE2E1"
+     data-titleColor="#64A6A3"
+     >
+       <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
+         <div class="text-left text-[#64A6A3] align-middle items-center my-auto">
+          <h1 class="text-[1.9em] font-base my-auto">Analytical Dashboard</h1>
           <div class="my-auto">
             <div class="flex flex-col">
-            <p class="text-[#4F46E5]/80">
-              A peer-to-peer instant real-time messaging application with user authentication, enabling seamless user search, friend
-requests, and efficient communication
+            <p class="text-[#64A6A3]/80">
+              A dashboard that provides a comprehensive overview of the company's performance, enabling the user to analyze the data
             </p>
           </div>
           </div>
         </div>
         </div>
-      </div>
+     </div>
 
-
-      <div class="h-[100vh] colorBox" data-color="#CDE2E1">
-        <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
-          <div class="text-left text-[#64A6A3] align-middle items-center my-auto">
-           <h1 class="text-[1.9em] font-base my-auto">Analytical Dashboard</h1>
-           <div class="my-auto">
-             <div class="flex flex-col">
-             <p class="text-[#64A6A3]/80">
-               A dashboard that provides a comprehensive overview of the company's performance, enabling the user to analyze the data
-             </p>
-           </div>
-           </div>
-         </div>
-         </div>
-      </div>
-
-      <div class="h-[100vh] colorBox cursor-scale" data-color="#FEEAEE"> 
-        <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
-          <div class="text-left text-[#F894B0] align-middle items-center my-auto">
-           <h1 class="text-[1.9em] font-base my-auto">Blog App</h1>
-           <div class="my-auto">
-             <div class="flex flex-col">
-             <p class="text-[#F894B0]/80">
-              Developed a modern Blog App leveraging GraphQL and GraphCMS to empower administrators with effortless con-
-              tent management and engage users through commenting functionality.
-             </p>
-           </div>
-           </div>
-         </div>
-         </div>  
-      </div>
-
-
-    </div>
-
-
-    <div class="right h-[100vh] w-1/2 relative screen rounded-[3rem]">
-      <div
-        class="absolute top-0 bottom-0 h-[60vh] w-[90%] m-auto overflow-hidden rounded-[3rem]"
-      >
-        <div class="p-[10%] rounded-[1.9rem] h-full w-full border-inherit flex flex-col smain">
-          <section class="py-2 bg-[#4F46E5] min-w-[35vw] translate-x-[-5vw] h-[60vh] translate-y-[-10vh] rounded-[3rem] card1 z-10 relative">
-            <img 
-            src="/blithe/home.png"
-            class="rounded-[1rem] aspect-auto w-[90%] m-auto bg-cover bg-center absolute top-0 bottom-0 left-0 right-0"
-            />
-          </section>
-
-          <section class="py-2 bg-[#64A6A3] min-w-[35vw] translate-x-[-5vw] h-[60vh] translate-y-[-10vh] rounded-[3rem] card2 z-20">
-            <img 
-            src="/dashboard/home.png"
-            class="rounded-[1rem] aspect-auto w-[90%] m-auto bg-cover bg-center absolute top-0 bottom-0 left-0 right-0"
-            />
-          </section>
-
-          <section class="py-2 bg-[#F894B0] min-w-[35vw] translate-x-[-5vw] h-[60vh] translate-y-[-10vh] rounded-[3rem] card3 z-30">
-            <img 
-            src="/blog/home.png"
-            class="rounded-[1rem] aspect-auto w-[90%] m-auto bg-cover bg-center absolute top-0 bottom-0 left-0 right-0"
-            />
-          </section>
+     <div 
+     data-title="Projects"
+     class="h-[100vh] colorBox cursor-scale" 
+     data-color="#FEEAEE"
+     data-titleColor="#F894B0"
+     > 
+       <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
+         <div class="text-left text-[#F894B0] align-middle items-center my-auto">
+          <h1 class="text-[1.9em] font-base my-auto">Blog App</h1>
+          <div class="my-auto">
+            <div class="flex flex-col">
+            <p class="text-[#F894B0]/80">
+             Developed a modern Blog App leveraging GraphQL and GraphCMS to empower administrators with effortless con-
+             tent management and engage users through commenting functionality.
+            </p>
+          </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
+        </div>  
+     </div>
 
-  <div class="flex md:hidden">
 
-  </div>
+   </div>
+
+
+   <div class="right h-[100vh] w-1/2 relative screen rounded-[3rem]">
+     <div
+       class="absolute top-0 bottom-0 h-[60vh] w-[90%] m-auto overflow-hidden rounded-[3rem]"
+     >
+       <div class="p-[10%] rounded-[1.9rem] h-full w-full border-inherit flex flex-col smain">
+         <section class="py-2 bg-[#4F46E5] min-w-[35vw] translate-x-[-5vw] h-[60vh] translate-y-[-10vh] rounded-[3rem] card1 z-10 relative">
+           <img 
+           src="/blithe/home.png"
+           class="rounded-[1rem] aspect-auto w-[90%] m-auto bg-cover bg-center absolute top-0 bottom-0 left-0 right-0"
+           />
+         </section>
+
+         <section class="py-2 bg-[#64A6A3] min-w-[35vw] translate-x-[-5vw] h-[60vh] translate-y-[-10vh] rounded-[3rem] card2 z-20">
+           <img 
+           src="/dashboard/home.png"
+           class="rounded-[1rem] aspect-auto w-[90%] m-auto bg-cover bg-center absolute top-0 bottom-0 left-0 right-0"
+           />
+         </section>
+
+         <section class="py-2 bg-[#F894B0] min-w-[35vw] translate-x-[-5vw] h-[60vh] translate-y-[-10vh] rounded-[3rem] card3 z-30">
+           <img 
+           src="/blog/home.png"
+           class="rounded-[1rem] aspect-auto w-[90%] m-auto bg-cover bg-center absolute top-0 bottom-0 left-0 right-0"
+           />
+         </section>
+       </div>
+     </div>
+   </div>
+ </div>
+  <MobileViewProjects />
 
   <Experience />
   
@@ -259,7 +268,7 @@ ScrollTrigger.create(
   import Lenis from '@studio-freight/lenis'
   const lenis = new Lenis();
 
-  function raf(time) {
+  function raf(time: number) {
     lenis.raf(time);
     requestAnimationFrame(raf);
   }
@@ -268,20 +277,44 @@ ScrollTrigger.create(
 </script>
 
 <script>
-  import gsap from 'gsap'
   const coloredBoxes = document.querySelectorAll('.colorBox');
 
 window.addEventListener('scroll', () => {
   coloredBoxes.forEach(box => {
     if (
-      box.getBoundingClientRect().top <= document.body.scrollTop
+      box.getBoundingClientRect().top <= document.body.scrollTop + 30
     ) {
-      document.body.style.backgroundColor = box.dataset.color;
+      document.body.style.backgroundColor = (box as HTMLElement).dataset.color;
       document.body.style.transition = '0.5s';
     }
   });
 });
+</script>
 
+<script>
+  // font-weight: 500;
+    // letter-spacing: 0.1rem;
+    // line-height: 1.5rem;
+    // clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    // text-transform: uppercase;
+  const coloredBoxes = document.querySelectorAll('.colorBox');
+  const title: HTMLElement = document.querySelector('.title')
+
+  window.addEventListener('scroll', () => {
+    coloredBoxes.forEach(box => {
+      if (
+        box.getBoundingClientRect().top <= document.body.scrollTop + 30
+      ) {
+        title.innerHTML = (box as HTMLElement).dataset.title;
+        title.style.transition = '0.5s';
+        title.style.letterSpacing = '0.1rem';
+        title.style.lineHeight = '1.5rem';
+        title.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0% 100%)';
+        title.style.textTransform = 'uppercase';
+        title.style.color = (box as HTMLElement).dataset.titleColor;
+      }
+    });
+  })
 </script>
 
 <style>

@@ -3,7 +3,9 @@
 ---
 
 <div class="wrapper colorBox"
-data-color="#FFFDE7"
+data-color="#F5F5F7"
+data-title="Experience"
+data-titleColor="#13151A"
 >
     <div class="container scrollx">
         <svg 
@@ -22,33 +24,61 @@ data-color="#FFFDE7"
 
 
         <section class="sec1 pin">
-            <span>[Sept 23' - Oct 23']</span>
+            <span class="text-sm">[Sept 23' - Oct 23']</span>
             <h1 class="text-primary">Blozum</h1>
 
-            <div class="col">
-                <p>Using GenAI to improve customer conversions on your website, app or social commerce platforms</p>
+            <div class="col md:w-[40vw] w-full flex-col">
+                <img 
+                src="/public/blozum/chatbot.png"
+                class="aspect-auto w-12/13 rounded-[1rem]"
+                />
+                <img 
+                src="/public/blozum/home.png"
+                class="aspect-auto w-12/13 rounded-[1rem] flex md:hidden"
+                />
+                <img 
+                src="/public/blozum/page.png"
+                class="aspect-auto w-12/13 rounded-[1rem] flex md:hidden"
+                />
+                <!-- <p>Using GenAI to improve customer conversions on your website, app or social commerce platforms</p> -->
                 <!-- <p>Lorem ipsum dolor sit amet consectetur. Egestas euismod nec sit sed massa turpis in. Sit praesent arcu leo lectus pellentesque. Ornare elit orci morbi volutpat. Ut fermentum lorem morbi quis risus amet urna. Urna egestas lorem.</p> -->
             </div>
         </section>
 
 
         <section class="sec2 pin">
-            <span class="anim">[June 23' - July 23']</span>
-            <h1 class="anim text-primary">Idigizen</h1>
+            <span class="anim text-sm">[June 23' - July 23']</span>
+            <h1 class="anim text-primary">Idigizen <p class="text-[0.5rem] mb-0">[Propreitry]</p></h1>
 
-            <div class="col anim">
-                <p>iDigizen is a befitting place for all non-academic and multidisciplinary requirements of a learner. It is a platform to hone talent, life skills and hobbies. With its LIVE, online interactive format, it offers range of courses across the genres of Music, Art, Dance, Foreign Languages and other hobbies. It allows learners to pick their area of interest and learn at their own pace. Connecting the trainer and the learner, it becomes a one-stop destination for all your non-academic learning needs.</p>
+            <div class="col anim md:w-[40vw] w-full">
+                <img 
+                src="/public/idigizen/home.jpeg"
+                class="aspect-auto w-12/13 rounded-[1rem]"
+                />
+                <!-- <p>iDigizen is a befitting place for all non-academic and multidisciplinary requirements of a learner. It is a platform to hone talent, life skills and hobbies. With its LIVE, online interactive format, it offers range of courses across the genres of Music, Art, Dance, Foreign Languages and other hobbies. It allows learners to pick their area of interest and learn at their own pace. Connecting the trainer and the learner, it becomes a one-stop destination for all your non-academic learning needs.</p> -->
                 <!-- <p>Lorem ipsum dolor sit amet consectetur. Egestas euismod nec sit sed massa turpis in. Sit praesent arcu leo lectus pellentesque. Ornare elit orci morbi volutpat. Ut fermentum lorem morbi quis risus amet urna. Urna egestas lorem.</p> -->
             </div>
         </section>
 
         
         <section class="sec3 pin">
-            <span class="anim">[Part-time]</span>
+            <span class="anim text-sm">[Part-time]</span>
             <h1 class="anim text-primary ">Fresources</h1>
 
-            <div class="col anim">
-                <p>One stop for all your academic solutions. Be it books, notes, assignments, practicals, question papers, exam solutions, we got you covered!</p>
+            <div class="col anim md:w-[40vw] w-full flex-col">
+                <img 
+                src="/public/fresources/home.png"
+                class="aspect-auto w-12/13 rounded-[1rem]"
+                />
+                <img 
+                src="/public/fresources/landing.png"
+                class="aspect-auto w-12/13 rounded-[1rem] flex md:hidden"
+                />
+                <img 
+                src="/public/fresources/event.png"
+                class="aspect-auto w-12/13 rounded-[1rem] flex md:hidden"
+                />
+                <!-- <p>One stop for all your academic solutions. Be it books, notes, assignments, practicals, question papers, exam solutions, we got you covered!</p> -->
                 <!-- <p>Lorem ipsum dolor sit amet consectetur. Egestas euismod nec sit sed massa turpis in. Sit praesent arcu leo lectus pellentesque. Ornare elit orci morbi volutpat. Ut fermentum lorem morbi quis risus amet urna. Urna egestas lorem.</p> -->
             </div>
         </section>
@@ -95,7 +125,7 @@ svg {
 
     section {
         width: 100vw;
-        padding: 20vw 10vw;
+        padding: 15vw 10vw;
 
         h1 {
             font-size: 3rem;
@@ -137,7 +167,7 @@ section {
     import gsap from 'gsap';
 
 
-const sections = gsap.utils.toArray(".container section");
+const sections: HTMLElement[] = gsap.utils.toArray(".container section");
 const mask = document.querySelector(".mask");
 
 let scrollTween = gsap.to(sections, {
@@ -167,7 +197,7 @@ gsap.to(mask, {
 // whizz around the sections
 sections.forEach((section) => {
   // grab the scoped text
-  let text = section.querySelectorAll(".anim");
+  let text = (section as HTMLElement).querySelectorAll(".anim");
   
   // bump out if there's no items to animate
   if(text.length === 0)  return 

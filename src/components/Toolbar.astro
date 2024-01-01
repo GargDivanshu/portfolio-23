@@ -29,7 +29,7 @@ class="toolbar bottom-5 w-fit mx-auto left-0 right-0 hidden md:flex text-[#D4D4D
 
 <script>
     const main = document.querySelector('.main');
-    const toolbar = document.querySelector('.toolbar');
+    const toolbar: HTMLElement = document.querySelector('.toolbar');
     
     
     const observer = new IntersectionObserver((entries) => {
