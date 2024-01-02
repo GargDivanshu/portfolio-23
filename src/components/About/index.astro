@@ -3,6 +3,7 @@
 ---
 
 <div 
+data-color="#FEFEFE"
 data-title="About Me"
 data-titleColor="#FEFEFE"
 style={{
@@ -41,7 +42,8 @@ class="rounded-[3rem] colorBox">
 
   const splitTypes = document.querySelectorAll(".revealType");
   splitTypes.forEach((char) => {
-    const text = new SplitType(char as HTMLElement, { types: "chars" });
+    // @ts-ignore
+    const text = new SplitType(char as HTMLElement, { types: '"words, chars"' });
 
 
     gsap.from(text.chars, {

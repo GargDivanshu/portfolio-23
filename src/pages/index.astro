@@ -46,11 +46,11 @@ import MobileViewProjects from '../components/Projects/index.astro'
      data-titleColor="#4F46E5"
      >
        <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
-        <div class="text-left text-[#4F46E5] align-middle items-center my-auto">
+        <div class="text-left text-blackPrimary align-middle items-center my-auto">
          <h1 class="text-[1.9em] font-base my-auto">Blithe Chat App</h1>
          <div class="my-auto">
            <div class="flex flex-col">
-           <p class="text-[#4F46E5]/80">
+           <p class="text-blackPrimary/80">
              A peer-to-peer instant real-time messaging application with user authentication, enabling seamless user search, friend
 requests, and efficient communication
            </p>
@@ -68,11 +68,11 @@ requests, and efficient communication
      data-titleColor="#64A6A3"
      >
        <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
-         <div class="text-left text-[#64A6A3] align-middle items-center my-auto">
+         <div class="text-left text-blackPrimary align-middle items-center my-auto">
           <h1 class="text-[1.9em] font-base my-auto">Analytical Dashboard</h1>
           <div class="my-auto">
             <div class="flex flex-col">
-            <p class="text-[#64A6A3]/80">
+            <p class="text-blackPrimary/80">
               A dashboard that provides a comprehensive overview of the company's performance, enabling the user to analyze the data
             </p>
           </div>
@@ -88,11 +88,11 @@ requests, and efficient communication
      data-titleColor="#F894B0"
      > 
        <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
-         <div class="text-left text-[#F894B0] align-middle items-center my-auto">
+         <div class="text-left text-blackPrimary align-middle items-center my-auto">
           <h1 class="text-[1.9em] font-base my-auto">Blog App</h1>
           <div class="my-auto">
             <div class="flex flex-col">
-            <p class="text-[#F894B0]/80">
+            <p class="text-blackPrimary/80">
              Developed a modern Blog App leveraging GraphQL and GraphCMS to empower administrators with effortless con-
              tent management and engage users through commenting functionality.
             </p>
@@ -114,6 +114,9 @@ requests, and efficient communication
          <section class="py-2 bg-[#4F46E5] min-w-[35vw] translate-x-[-5vw] h-[60vh] translate-y-[-10vh] rounded-[3rem] card1 z-10 relative">
            <img 
            src="/blithe/home.png"
+           style={{
+            boxShadow: 'rgba(0, 0, 0, 0.2) 0px 60px 40px -7px',
+           }}
            class="rounded-[1rem] aspect-auto w-[90%] m-auto bg-cover bg-center absolute top-0 bottom-0 left-0 right-0"
            />
          </section>
@@ -121,6 +124,9 @@ requests, and efficient communication
          <section class="py-2 bg-[#64A6A3] min-w-[35vw] translate-x-[-5vw] h-[60vh] translate-y-[-10vh] rounded-[3rem] card2 z-20">
            <img 
            src="/dashboard/home.png"
+           style={{
+            boxShadow: 'rgba(0, 0, 0, 0.2) 0px 60px 40px -7px',
+           }}
            class="rounded-[1rem] aspect-auto w-[90%] m-auto bg-cover bg-center absolute top-0 bottom-0 left-0 right-0"
            />
          </section>
@@ -128,6 +134,9 @@ requests, and efficient communication
          <section class="py-2 bg-[#F894B0] min-w-[35vw] translate-x-[-5vw] h-[60vh] translate-y-[-10vh] rounded-[3rem] card3 z-30">
            <img 
            src="/blog/home.png"
+           style={{
+            boxShadow: 'rgba(0, 0, 0, 0.2) 0px 60px 40px -7px',
+           }}
            class="rounded-[1rem] aspect-auto w-[90%] m-auto bg-cover bg-center absolute top-0 bottom-0 left-0 right-0"
            />
          </section>
@@ -299,6 +308,7 @@ window.addEventListener('scroll', () => {
     // text-transform: uppercase;
   const coloredBoxes = document.querySelectorAll('.colorBox');
   const title: HTMLElement = document.querySelector('.title')
+  console.log(title.style.color + " color")
 
   window.addEventListener('scroll', () => {
     coloredBoxes.forEach(box => {
@@ -306,15 +316,17 @@ window.addEventListener('scroll', () => {
         box.getBoundingClientRect().top <= document.body.scrollTop + 30
       ) {
         title.innerHTML = (box as HTMLElement).dataset.title;
+        title.style.color = (box as HTMLElement).dataset.titleColor;
         title.style.transition = '0.5s';
         title.style.letterSpacing = '0.1rem';
         title.style.lineHeight = '1.5rem';
         title.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0% 100%)';
         title.style.textTransform = 'uppercase';
-        title.style.color = (box as HTMLElement).dataset.titleColor;
       }
     });
   })
+  console.log(title.style.color + " colorX2")
+
 </script>
 
 <style>
@@ -441,4 +453,5 @@ window.addEventListener('scroll', () => {
       transform: translate(0, -0px);
     }
   }
+
 </style>
