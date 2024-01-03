@@ -43,7 +43,7 @@ import MobileViewProjects from '../components/Projects/index.astro'
      data-title="Projects"
      class="h-[101vh] colorBox text-[#1A1A1A]" 
      data-color="#B9B5F5"
-     data-titleColor="#4F46E5"
+     data-title-color="#4F46E5"
      >
        <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
         <div class="text-left text-blackPrimary align-middle items-center my-auto">
@@ -66,7 +66,7 @@ requests, and efficient communication
      data-title="Projects"
      class="h-[100vh] colorBox" 
      data-color="#CDE2E1"
-     data-titleColor="#64A6A3"
+     data-title-color="#64A6A3"
      >
        <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
          <div class="text-left text-blackPrimary align-middle items-center my-auto">
@@ -87,11 +87,11 @@ requests, and efficient communication
      data-title="Projects"
      class="h-[100vh] colorBox cursor-scale" 
      data-color="#FEEAEE"
-     data-titleColor="#F894B0"
+     data-title-color="#F894B0"
      > 
        <div class="m-auto h-[100vh] w-4/5 flex flex-col align-middle items-center p-[10%]">
          <div class="text-left text-blackPrimary align-middle items-center my-auto">
-          <h2 class="text-[#F894B0] py-[3vh]"> <a href="https://divanshublog.vercel.app" target="_blank">https://divanshublog.vercel.app</a></h2>
+          <h2 class="text-[#F894B0] py-[3vh]"> <a href="https://divanshublog.vercel.app" target="_blank">divanshublog.vercel.app</a></h2>
           <h1 class="text-[1.9em] font-base my-auto">Blog App</h1>
           <div class="my-auto">
             <div class="flex flex-col">
@@ -311,15 +311,16 @@ window.addEventListener('scroll', () => {
     // text-transform: uppercase;
   const coloredBoxes = document.querySelectorAll('.colorBox');
   const title: HTMLElement = document.querySelector('.title')
-  console.log(title.style.color + " color")
+  // console.log(title.classList + " div")
 
   window.addEventListener('scroll', () => {
     coloredBoxes.forEach(box => {
+      // console.log((box as HTMLElement).dataset.titleColor + " boxcolor")
       if (
         box.getBoundingClientRect().top <= document.body.scrollTop + 30
       ) {
         title.innerHTML = (box as HTMLElement).dataset.title;
-        title.style.color = (box as HTMLElement).dataset.titleColor;
+        // title.classList.add((box as HTMLElement).dataset.titleColor)
         title.style.transition = '0.5s';
         title.style.letterSpacing = '0.1rem';
         title.style.lineHeight = '1.5rem';
@@ -328,7 +329,6 @@ window.addEventListener('scroll', () => {
       }
     });
   })
-  console.log(title.style.color + " colorX2")
 
 </script>
 

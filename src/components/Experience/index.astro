@@ -2,15 +2,20 @@
 
 ---
 <!--  bg-[url('/expBg.png')] bg-cover -->
-<div class="wrapper colorBox"
+<div class="wrapper colorBox relative"
 data-color="#F5F5F7"
 data-title="Experience"
-data-titleColor="#13151A"
+data-title-color="#13151A"
+style={{
+    font: 'Inter',
+}}
 >
-<!-- <div class="absolute bg-gradient-to-br from-primary via-inherit to-black blur-xl top-3 left-11">
-
-</div> -->
     <div class="container scrollx">
+        <div class="absolute top-[10vh] w-4/5 h-[5vh] mx-[10vw] text-[1.5rem] font-light text-blackPrimary/90">
+            These are some of the projects I worked on while interning or in collaboration with other people, contact to know more
+        </div>
+        <div class="absolute top-0 bottom-0 right-0 m-auto left-0 blob">
+        </div>
         <svg 
         class="hidden md:block"
         viewBox="0 0 900 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -95,6 +100,42 @@ data-titleColor="#13151A"
 
 
 <style>
+.blob {
+  position: absolute;
+  opacity: 0.5;
+  width: 400px;
+  aspect-ratio: 1/1;
+  animation: blobAnimate 10s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite alternate forwards;
+  filter: blur(40px);
+  z-index: -1;
+  background: linear-gradient(
+    47deg,
+    rgba(255, 88, 139, 1) 21%,
+    rgb(0 164 173) 67%,
+    rgba(118, 74, 166, 1) 81%
+  );
+}
+
+@keyframes blobAnimate {
+  0% {
+    translate: 40% -25%;
+    border-radius: 60% 40% 30% 70% / 100% 85% 92% 74%;
+  }
+  50% {
+    translate: 0% 13%;
+    border-radius: 20% 71% 47% 70% / 81% 15% 22% 54%;
+    rotate: 41deg;
+    scale: 1.15;
+  }
+  100% {
+    translate: -45% 39%;
+    border-radius: 100% 75% 92% 74% / 60% 80% 30% 70%;
+    rotate: -60deg;
+    scale: 1.05;
+  }
+}
+
+
 .wrapper {
     overflow-x: hidden;
     position: relative;
