@@ -1,7 +1,11 @@
-<div class="flex space-x-8 text-9xl font-extrabold">
+<div class="flex space-x-8 text-9xl font-extrabold my-8">
     <h3 class="banner_line translate-x-[60vw]" id="seo">
         <div class="flex items-end space-x-7 text-primary">
-            <span class="cursor-scale">FREELANCER</span>
+            <span 
+            style={{
+                fontFamily: 'Tourney',
+            }}
+            class="cursor-scale">FREELANCER</span>
         </div>
     </h3>
 </div>
@@ -17,7 +21,7 @@
         currentPos += scrollDelta;
         if (!bannerLine) return;
 
-        bannerLine.style.transform = `translateX(calc(60vw + ${
+        bannerLine.style.transform = `translateX(calc(60vw + 2*${
             currentPos / 3
         }px))`;
 
