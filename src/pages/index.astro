@@ -33,6 +33,7 @@ import MobileViewProjects from '../components/Projects/index.astro'
  style={{
    font: 'Inter',
  }}
+   id="ProjectsPage"
    class="h-fit w-[100%] mx-auto relative hidden md:flex gallery align-middle justify-center"
  >
    <div 
@@ -336,7 +337,13 @@ window.addEventListener('scroll', () => {
 @import url('https://fonts.googleapis.com/css2?family=Acme&family=Archivo&family=Audiowide&family=Black+Ops+One&family=Cinzel&family=Cookie&family=DM+Serif+Display&family=Dancing+Script&family=Great+Vibes&family=Indie+Flower&family=Inter&family=Kaushan+Script&family=Pacifico&family=Permanent+Marker&family=Philosopher&family=Poppins:wght@200&family=Raleway&family=Rowdies&family=Russo+One&family=Sacramento&family=Satisfy&family=Tangerine&family=Tourney&family=Ultra&family=Vina+Sans&family=Work+Sans:wght@300;900&family=Zeyada&display=swap');
   body {
     text: #1a1a1a;
+    /* scroll-behavior: smooth; */
   }
+  :root {
+  --uno-inset: 0;
+  --dos-inset: 100%;
+  --tres-inset: 100%;
+}
   main {
     margin: auto;
     padding: 1rem;

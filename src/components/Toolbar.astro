@@ -11,34 +11,89 @@ class="z-50 toolbar bottom-5 w-fit mx-auto left-0 right-0 hidden md:flex text-[#
     <ul 
     class="p-4 hover:cursor-pointer">
         <a id="home">
-        Home
+        HOME
         </a>
     </ul>
-    <ul class="p-4 hover:cursor-pointer">
-        Contact
+    <ul id="about" class="p-4 hover:cursor-pointer">
+        ABOUT
     </ul>
-    <ul class="p-4 hover:cursor-pointer">
-        Skills
+    <ul id="projects" class="p-4 hover:cursor-pointer">
+        PROJECTS
     </ul>
-    <ul class="p-4 hover:cursor-pointer">
-        Something
+    <ul id="exp" class="p-4 hover:cursor-pointer">
+        EXPERIENCE
     </ul>
-    <ul class="bg-[#464646] rounded-r-[.6rem] p-4 hover:cursor-pointer">
-        Dashboard View
+    <!-- <ul class="p-4 hover:cursor-pointer">
+        CONTACT
+    </ul> -->
+    <!-- bg-[#464646] -->
+    <ul id="contact" class=" rounded-r-[.6rem] p-4 hover:cursor-pointer">
+        CONTACT
     </ul>
 </div>
 
-<script is:inline>
+<script >
     import gsap from 'gsap';
+    import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+    gsap.registerPlugin(ScrollToPlugin);
+
     const home = document.getElementById('home');
     home.addEventListener('click', () => {
-
+        console.log("home clicked")
         gsap.to(window, {
             duration: 1,
             scrollTo: {
-                y: "HomePage",
+                y: '#HomePage',
                 // autoKill: true
-            }
+            },
+        });
+    });
+
+    const about = document.getElementById('about');
+    about.addEventListener('click', () => {
+        console.log("about clicked")
+        gsap.to(window, {
+            duration: 1,
+            scrollTo: {
+                y: '#AboutPage',
+                // autoKill: true
+            },
+        });
+    });
+
+    const projects = document.getElementById('projects');
+    projects.addEventListener('click', () => {
+        console.log("projects clicked")
+        gsap.to(window, {
+            duration: 1,
+            scrollTo: {
+                y: '#ProjectsPage',
+                // autoKill: true
+            },
+        });
+    });
+
+    const exp = document.getElementById('exp');
+    exp.addEventListener('click', () => {
+        console.log("exp clicked")
+        gsap.to(window, {
+            duration: 1,
+            scrollTo: {
+                y: '#ExperiencePage',
+                // autoKill: true
+            },
+        });
+    });
+
+    const contact = document.getElementById('contact');
+    contact.addEventListener('click', () => {
+        console.log("contact clicked")
+        gsap.to(window, {
+            duration: 1,
+            scrollTo: {
+                y: '#ContactPage',
+                // autoKill: true
+            },
         });
     });
 </script>
