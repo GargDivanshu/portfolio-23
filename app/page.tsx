@@ -4,6 +4,11 @@ import type { CSSProperties } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMotionValue, useMotionValueEvent, useSpring, useTransform, useVelocity } from "framer-motion";
 
+import ExplorerSprite from "./components/ExplorerSprite";
+import FogLayer from "./components/FogLayer";
+import GroundPlane from "./components/GroundPlane";
+import { mixRgba } from "../lib/color";
+
 type Decoration = {
   layer: "background" | "midground" | "foreground";
   style: CSSProperties;
@@ -439,39 +444,6 @@ const easeInOutCosine = (t: number) => {
   return (1 - Math.cos(Math.PI * clamped)) / 2;
 };
 
-const parseRgba = (value: string) => {
-  const match = value.match(/rgba?\(([^)]+)\)/i);
-  if (!match) {
-    return null;
-  }
-  const parts = match[1]
-    .split(",")
-    .map((part) => part.trim())
-    .map((part, index) => (index < 3 ? parseFloat(part) : parseFloat(part)));
-  const [r, g, b, a] = [
-    Number.isFinite(parts[0]) ? parts[0] : 255,
-    Number.isFinite(parts[1]) ? parts[1] : 255,
-    Number.isFinite(parts[2]) ? parts[2] : 255,
-    Number.isFinite(parts[3]) ? parts[3] : 1,
-  ];
-  return { r, g, b, a } as const;
-};
-
-const mixRgba = (fromColor: string, toColor: string, t: number) => {
-  const start = parseRgba(fromColor);
-  const end = parseRgba(toColor);
-  if (!start || !end) {
-    return fromColor;
-  }
-  const clamped = Math.min(Math.max(t, 0), 1);
-  const mix = (a: number, b: number) => a + (b - a) * clamped;
-  const r = Math.round(mix(start.r, end.r));
-  const g = Math.round(mix(start.g, end.g));
-  const b = Math.round(mix(start.b, end.b));
-  const a = mix(start.a, end.a);
-  return `rgba(${r}, ${g}, ${b}, ${a.toFixed(3)})`;
-};
-
 type SceneSectionProps = {
   scene: SceneData;
   parallaxOffset: number;
@@ -641,113 +613,6 @@ function SceneSection({ scene, parallaxOffset, proximity, isActive }: SceneSecti
   );
 }
 
-type ExplorerSpriteProps = {
-  highlight: string;
-  lightCone: string;
-  position: number;
-  stridePhase: number;
-  strideIntensity: number;
-};
-
-function ExplorerSprite({ highlight, lightCone, position, stridePhase, strideIntensity }: ExplorerSpriteProps) {
-  const strideAngle = Math.sin(stridePhase * Math.PI * 2) * (2.2 + strideIntensity * 3.4);
-  const lateralDrift = Math.sin(stridePhase * Math.PI * 2 + Math.PI / 2) * strideIntensity * 0.8;
-  const footPulse = Math.max(0.75, 1 - Math.cos(stridePhase * Math.PI * 2) * 0.15 * strideIntensity);
-  const staffGlowOpacity = 0.45 + Math.min(strideIntensity, 0.9) * 0.45;
-  const haloOpacity = 0.35 + Math.min(strideIntensity, 0.8) * 0.45;
-  const lift = Math.sin(stridePhase * Math.PI * 2) * strideIntensity * 1.2;
-
-  return (
-    <div
-      className="pointer-events-none absolute bottom-[14vh] left-0 z-30 flex flex-col items-center will-change-transform"
-      style={{
-        transform: `translate3d(${position.toFixed(3)}vw, ${(-lift * 0.6).toFixed(3)}vh, 0)`,
-      }}
-    >
-      <div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 rounded-full blur-3xl transition-opacity duration-200"
-        style={{
-          width: "26rem",
-          height: "26rem",
-          background: `radial-gradient(circle at 50% 100%, ${lightCone}, rgba(5, 3, 15, 0))`,
-          opacity: haloOpacity,
-          transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1), filter 400ms cubic-bezier(0.45,0,0.55,1)",
-        }}
-      />
-      <div
-        className="absolute bottom-10 left-1/2 h-48 w-1 -translate-x-1/2 rounded-full transition-all duration-200"
-        style={{
-          background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0))",
-          boxShadow: `0 0 ${28 + strideIntensity * 24}px ${highlight}`,
-          opacity: staffGlowOpacity,
-          transform: `translateX(${(lateralDrift * 0.4).toFixed(3)}rem)`,
-          transition:
-            "opacity 400ms cubic-bezier(0.45,0,0.55,1), box-shadow 400ms cubic-bezier(0.45,0,0.55,1)",
-        }}
-      />
-      <div
-        className="absolute bottom-[9.5rem] left-1/2 -translate-x-1/2 rounded-full"
-        style={{
-          width: "8rem",
-          height: "8rem",
-          background: `radial-gradient(circle, ${highlight}, rgba(255, 255, 255, 0))`,
-          filter: "blur(16px)",
-          opacity: staffGlowOpacity,
-          transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1), filter 400ms cubic-bezier(0.45,0,0.55,1)",
-        }}
-      />
-      <div
-        className="relative flex h-48 w-24 items-end justify-center"
-        style={{
-          filter: `drop-shadow(0 0 ${18 + strideIntensity * 36}px rgba(138, 225, 255, ${0.25 + strideIntensity * 0.3}))`,
-          transform: `translateX(${(lateralDrift * 0.6).toFixed(3)}rem)`,
-          transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1), filter 400ms cubic-bezier(0.45,0,0.55,1)",
-        }}
-      >
-        <div
-          className="absolute bottom-0 h-44 w-12 origin-bottom rounded-full bg-[#05030f] shadow-[0_0_30px_rgba(92,225,230,0.35)] transition-transform duration-200"
-          style={{ transform: `rotate(${strideAngle.toFixed(3)}deg)` }}
-        />
-        <div
-          className="absolute bottom-12 left-1/2 h-14 w-6 -translate-x-1/2 rounded-full bg-gradient-to-b from-white/80 via-white/20 to-transparent"
-          style={{
-            boxShadow: `0 0 ${18 + strideIntensity * 20}px ${highlight}`,
-            transition:
-              "opacity 400ms cubic-bezier(0.45,0,0.55,1), box-shadow 400ms cubic-bezier(0.45,0,0.55,1)",
-          }}
-        />
-        <div
-          className="absolute bottom-1 left-1/2 -translate-x-1/2 transition-transform duration-200"
-          style={{
-            width: "3.6rem",
-            height: "0.9rem",
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(10, 9, 24, 0.85), transparent 70%)",
-            transform: `scaleX(${footPulse.toFixed(3)})`,
-          }}
-        />
-        <div
-          className="absolute bottom-20 left-1/2 h-24 w-16 -translate-x-1/2"
-          style={{
-            background: "linear-gradient(180deg, rgba(8, 10, 30, 0.9), rgba(5, 3, 15, 0.5))",
-            clipPath: "polygon(35% 0%, 65% 0%, 90% 80%, 10% 80%)",
-          }}
-        />
-        <div
-          className="absolute bottom-24 left-[60%] h-20 w-2 rounded-full"
-          style={{
-            background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0))",
-            transform: `rotate(${(4 + strideIntensity * 1.5).toFixed(3)}deg)`,
-            boxShadow: `0 0 ${12 + strideIntensity * 18}px ${highlight}`,
-            transition:
-              "opacity 400ms cubic-bezier(0.45,0,0.55,1), box-shadow 400ms cubic-bezier(0.45,0,0.55,1)",
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
 export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const totalScenes = scenes.length;
@@ -755,7 +620,7 @@ export default function Home() {
 
   const progressValue = useMotionValue(0);
   const worldTarget = useTransform(progressValue, (value) => -value * worldSpan * 100);
-  const characterTarget = useTransform(progressValue, (value) => 18 + value * 24);
+  const characterTarget = useTransform(progressValue, () => 40);
   const bobTarget = useTransform(progressValue, (value) => Math.sin(value * Math.PI * 2) * 1.4);
   const velocityValue = useVelocity(progressValue);
   const speedValue = useTransform(velocityValue, (value) => Math.min(Math.abs(value), 2));
@@ -1074,6 +939,17 @@ export default function Home() {
                   />
                 ))}
               </div>
+              <FogLayer
+                worldX={worldTransform.x}
+                highlightColor={highlightColor}
+                lightConeColor={lightConeColor}
+                blend={backgroundState?.blend ?? 0}
+              />
+              <GroundPlane
+                blend={backgroundState?.blend ?? 0}
+                highlightColor={highlightColor}
+                lightConeColor={lightConeColor}
+              />
               <ExplorerSprite
                 highlight={highlightColor}
                 lightCone={lightConeColor}
