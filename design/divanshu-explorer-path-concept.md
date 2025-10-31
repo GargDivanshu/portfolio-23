@@ -2,7 +2,7 @@
 
 ## Vision Overview
 - **Narrative Arc:** Follow a lone explorer moving through five realms that illustrate Divanshu Garg's creative evolution from curiosity to mastery.
-- **Interaction Model:** Horizontal scroll with 2.5D parallax and cinematic pacing suitable for a Next.js + Framer Motion implementation.
+- **Interaction Model:** Vertical scroll input remaps to horizontal travel with 2.5D parallax and cinematic pacing, ideal for a Next.js + Framer Motion implementation.
 - **Aesthetic:** Mystical, handcrafted environments blending art, AI, and engineering motifs.
 
 ## Phase 01 — Base Environment & Layout
@@ -62,7 +62,7 @@
 - **UI Elements:** Top-left minimal logo, top-right nav (“Work”, “Journal”, “Contact”) with low opacity until Scene 4 to reduce clutter.
 
 ## Phase 05 — Prototype & Export
-- **Prototype:** Link artboards left-to-right using Smart Animate; enable “Horizontal scrolling” with preserved scroll position for overlays.
+- **Prototype:** Link artboards left-to-right using Smart Animate; enable “Horizontal scrolling” with preserved scroll position for overlays and test vertical scroll → horizontal pan using a scroll wrapper.
 - **Parallax Preview:** Use additional overlay frames offset according to ratios to communicate depth to developers.
 - **Export Assets:**
   - Color tokens in Figma Styles named `Scene/{SceneName}/{Element}`.

@@ -440,50 +440,13 @@ const mantraSequence = [
 
 type SceneSectionProps = {
   scene: SceneData;
-  index: number;
-  onProgress: (index: number, value: number) => void;
+  progress: number;
   isActive: boolean;
   nextTransition?: string;
 };
 
-function SceneSection({ scene, index, onProgress, isActive, nextTransition }: SceneSectionProps) {
-  const [progress, setProgress] = useState(0);
+function SceneSection({ scene, progress, isActive, nextTransition }: SceneSectionProps) {
   const sectionId = `${scene.id}-section`;
-
-  const updateProgress = useCallback(() => {
-    const section = document.getElementById(sectionId);
-    if (!section) return;
-
-    const rect = section.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    const total = rect.height + viewportHeight;
-    const offset = viewportHeight - rect.top;
-    const rawProgress = Math.min(Math.max(offset / total, 0), 1);
-
-    setProgress((prev) => {
-      if (Math.abs(prev - rawProgress) < 0.01) {
-        return prev;
-      }
-      return rawProgress;
-    });
-
-    onProgress(index, rawProgress);
-  }, [index, onProgress, sectionId]);
-
-  useEffect(() => {
-    updateProgress();
-    const handleScroll = () => {
-      requestAnimationFrame(updateProgress);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", updateProgress);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", updateProgress);
-    };
-  }, [updateProgress]);
 
   const backgroundShift = ((progress - 0.5) * -16).toFixed(3);
   const midgroundShift = ((progress - 0.5) * -28).toFixed(3);
@@ -499,7 +462,7 @@ function SceneSection({ scene, index, onProgress, isActive, nextTransition }: Sc
   return (
     <section
       id={sectionId}
-      className="relative flex h-[100vh] min-h-[720px] w-full items-center justify-center overflow-hidden px-6 py-20 md:px-16"
+      className="relative flex h-[100vh] min-h-[720px] w-screen flex-shrink-0 items-center justify-center overflow-hidden px-6 py-20 md:px-16"
     >
       <div
         className="absolute inset-0"
@@ -597,6 +560,239 @@ function SceneSection({ scene, index, onProgress, isActive, nextTransition }: Sc
             {scene.cta.label}
             <span aria-hidden className="text-white/70">→</span>
           </a>
+        </div>
+      ) : null}
+
+      {gradientOverlay ? (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64" style={gradientOverlay} />
+      ) : null}
+    </section>
+  );
+}
+
+type ExplorerSpriteProps = {
+  highlight: string;
+  lightCone: string;
+  stridePhase: number;
+  isActive: boolean;
+};
+
+function ExplorerSprite({ highlight, lightCone, stridePhase, isActive }: ExplorerSpriteProps) {
+  const strideOffset = stridePhase === 0 ? "rotate(1.5deg)" : "rotate(-1.5deg)";
+  const staffGlowOpacity = isActive ? 0.85 : 0.4;
+
+  return (
+    <div className="pointer-events-none absolute bottom-[14vh] left-[12vw] flex flex-col items-center">
+      <div
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 rounded-full blur-3xl"
+        style={{
+          width: "26rem",
+          height: "26rem",
+          background: `radial-gradient(circle at 50% 100%, ${lightCone}, rgba(5, 3, 15, 0))`,
+          opacity: 0.5,
+        }}
+      />
+      <div
+        className="absolute bottom-10 left-1/2 h-48 w-1 -translate-x-1/2 rounded-full"
+        style={{
+          background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0))",
+          boxShadow: `0 0 30px ${highlight}`,
+          opacity: staffGlowOpacity,
+        }}
+      />
+      <div
+        className="absolute bottom-[9.5rem] left-1/2 -translate-x-1/2 rounded-full"
+        style={{
+          width: "8rem",
+          height: "8rem",
+          background: `radial-gradient(circle, ${highlight}, rgba(255, 255, 255, 0))`,
+          filter: "blur(16px)",
+          opacity: staffGlowOpacity,
+        }}
+      />
+      <div
+        className="relative flex h-48 w-24 items-end justify-center"
+        style={{
+          filter: "drop-shadow(0 0 32px rgba(138, 225, 255, 0.35))",
+        }}
+      >
+        <div
+          className="absolute bottom-0 h-44 w-12 origin-bottom rounded-full bg-[#05030f] shadow-[0_0_30px_rgba(92,225,230,0.35)]"
+          style={{ transform: strideOffset }}
+        />
+        <div
+          className="absolute bottom-12 left-1/2 h-14 w-6 -translate-x-1/2 rounded-full bg-gradient-to-b from-white/80 via-white/20 to-transparent"
+          style={{
+            boxShadow: `0 0 24px ${highlight}`,
+          }}
+        />
+        <div
+          className="absolute bottom-1 left-1/2 -translate-x-1/2"
+          style={{
+            width: "3.6rem",
+            height: "0.9rem",
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(10, 9, 24, 0.85), transparent 70%)",
+          }}
+        />
+        <div
+          className="absolute bottom-20 left-1/2 h-24 w-16 -translate-x-1/2"
+          style={{
+            background: "linear-gradient(180deg, rgba(8, 10, 30, 0.9), rgba(5, 3, 15, 0.5))",
+            clipPath: "polygon(35% 0%, 65% 0%, 90% 80%, 10% 80%)",
+          }}
+        />
+        <div
+          className="absolute bottom-24 left-[60%] h-20 w-2 rounded-full"
+          style={{
+            background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0))",
+            transform: "rotate(4deg)",
+            boxShadow: `0 0 16px ${highlight}`,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default function Home() {
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const totalScenes = scenes.length;
+  const sceneSegment = 1 / totalScenes;
+
+  useEffect(() => {
+    const updateScroll = () => {
+      const viewport = window.innerHeight;
+      const totalScrollable = viewport * (totalScenes - 1);
+      if (totalScrollable <= 0) {
+        setScrollProgress(0);
+        return;
+      }
+      const next = Math.min(Math.max(window.scrollY / totalScrollable, 0), 1);
+      setScrollProgress((prev) => {
+        if (Math.abs(prev - next) < 0.001) return prev;
+        return next;
+      });
+    };
+
+    updateScroll();
+    window.addEventListener("scroll", updateScroll, { passive: true });
+    window.addEventListener("resize", updateScroll);
+
+    return () => {
+      window.removeEventListener("scroll", updateScroll);
+      window.removeEventListener("resize", updateScroll);
+    };
+  }, [totalScenes]);
+
+  const sceneProgress = useMemo(
+    () =>
+      scenes.map((_, index) => {
+        const start = index * sceneSegment;
+        const relative = (scrollProgress - start) / sceneSegment;
+        return Math.min(Math.max(relative, 0), 1);
+      }),
+    [scrollProgress, sceneSegment, totalScenes]
+  );
+
+  const activeSceneIndex = useMemo(() => {
+    const firstIncomplete = sceneProgress.findIndex((value) => value < 1);
+    return firstIncomplete === -1 ? totalScenes - 1 : firstIncomplete;
+  }, [sceneProgress, totalScenes]);
+
+  const activeScene = scenes[activeSceneIndex];
+  const translateX = useMemo(() => -scrollProgress * (totalScenes - 1) * 100, [scrollProgress, totalScenes]);
+
+  const handleJumpToScene = useCallback(
+    (targetIndex: number) => {
+      const viewport = window.innerHeight;
+      const clampedIndex = Math.min(Math.max(targetIndex, 0), totalScenes - 1);
+      const offset = clampedIndex * viewport;
+      window.scrollTo({ top: offset, behavior: "smooth" });
+    },
+    [totalScenes]
+  );
+
+  return (
+    <div className="relative min-h-screen">
+      <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-6 backdrop-blur-md md:px-12">
+        <div className="flex flex-col text-xs uppercase tracking-[0.4em] text-white/70 md:text-sm">
+          <span>Divanshu Garg</span>
+          <span className="text-white/40">The Explorer's Path</span>
+        </div>
+        <nav className="hidden items-center gap-8 text-xs uppercase tracking-[0.4em] text-white/50 md:flex">
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(0)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Origin
+          </button>
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(1)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Harmonics
+          </button>
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(2)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Frameworks
+          </button>
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(3)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Systems
+          </button>
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(4)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Forge
+          </button>
+        </nav>
+      </header>
+
+      <aside className="fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-4 text-xs uppercase tracking-[0.35em] text-white/50 lg:flex">
+        {scenes.map((scene, index) => (
+          <div key={scene.id} className="flex items-center gap-3">
+            <span
+              className={`h-px w-10 transition-all ${
+                index === activeSceneIndex ? "bg-white" : "bg-white/20"
+              }`}
+            />
+            <span className={index === activeSceneIndex ? "text-white" : "text-white/35"}>{scene.mood}</span>
+          </div>
+        ))}
+      </aside>
+
+      <main className="relative">
+        <div style={{ height: `${totalScenes * 100}vh` }}>
+          <div className="sticky top-0 h-screen overflow-hidden">
+            <div
+              className="flex h-full transition-transform duration-300 ease-out will-change-transform"
+              style={{
+                width: `${totalScenes * 100}vw`,
+                transform: `translate3d(${translateX}vw, 0, 0)`,
+              }}
+            >
+              {scenes.map((scene, index) => (
+                <SceneSection
+                  key={scene.id}
+                  scene={scene}
+                  progress={sceneProgress[index] ?? 0}
+                  isActive={activeSceneIndex === index}
+                  nextTransition={scene.transitionTo}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       ) : null}
 
