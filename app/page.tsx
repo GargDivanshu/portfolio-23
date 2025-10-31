@@ -794,6 +794,203 @@ export default function Home() {
             </div>
           </div>
         </div>
+      ) : null}
+
+      {gradientOverlay ? (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64" style={gradientOverlay} />
+      ) : null}
+    </section>
+  );
+}
+
+type ExplorerSpriteProps = {
+  highlight: string;
+  lightCone: string;
+  stridePhase: number;
+  isActive: boolean;
+};
+
+function ExplorerSprite({ highlight, lightCone, stridePhase, isActive }: ExplorerSpriteProps) {
+  const strideOffset = stridePhase === 0 ? "rotate(1.5deg)" : "rotate(-1.5deg)";
+  const staffGlowOpacity = isActive ? 0.85 : 0.4;
+
+  return (
+    <div className="pointer-events-none absolute bottom-[14vh] left-1/2 flex -translate-x-1/2 flex-col items-center">
+      <div
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 rounded-full blur-3xl"
+        style={{
+          width: "26rem",
+          height: "26rem",
+          background: `radial-gradient(circle at 50% 100%, ${lightCone}, rgba(5, 3, 15, 0))`,
+          opacity: 0.5,
+        }}
+      />
+      <div
+        className="absolute bottom-10 left-1/2 h-48 w-1 -translate-x-1/2 rounded-full"
+        style={{
+          background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0))",
+          boxShadow: `0 0 30px ${highlight}`,
+          opacity: staffGlowOpacity,
+        }}
+      />
+      <div
+        className="absolute bottom-[9.5rem] left-1/2 -translate-x-1/2 rounded-full"
+        style={{
+          width: "8rem",
+          height: "8rem",
+          background: `radial-gradient(circle, ${highlight}, rgba(255, 255, 255, 0))`,
+          filter: "blur(16px)",
+          opacity: staffGlowOpacity,
+        }}
+      />
+      <div
+        className="relative flex h-48 w-24 items-end justify-center"
+        style={{
+          filter: "drop-shadow(0 0 32px rgba(138, 225, 255, 0.35))",
+        }}
+      >
+        <div
+          className="absolute bottom-0 h-44 w-12 origin-bottom rounded-full bg-[#05030f] shadow-[0_0_30px_rgba(92,225,230,0.35)]"
+          style={{ transform: strideOffset }}
+        />
+        <div
+          className="absolute bottom-12 left-1/2 h-14 w-6 -translate-x-1/2 rounded-full bg-gradient-to-b from-white/80 via-white/20 to-transparent"
+          style={{
+            boxShadow: `0 0 24px ${highlight}`,
+          }}
+        />
+        <div
+          className="absolute bottom-1 left-1/2 -translate-x-1/2"
+          style={{
+            width: "3.6rem",
+            height: "0.9rem",
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(10, 9, 24, 0.85), transparent 70%)",
+          }}
+        />
+        <div
+          className="absolute bottom-20 left-1/2 h-24 w-16 -translate-x-1/2"
+          style={{
+            background: "linear-gradient(180deg, rgba(8, 10, 30, 0.9), rgba(5, 3, 15, 0.5))",
+            clipPath: "polygon(35% 0%, 65% 0%, 90% 80%, 10% 80%)",
+          }}
+        />
+        <div
+          className="absolute bottom-24 left-[55%] h-20 w-2 rounded-full"
+          style={{
+            background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0))",
+            transform: "rotate(4deg)",
+            boxShadow: `0 0 16px ${highlight}`,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default function Home() {
+  const [sceneProgress, setSceneProgress] = useState(() => scenes.map(() => 0));
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const updateScroll = () => {
+      const scrollable = document.body.scrollHeight - window.innerHeight;
+      if (scrollable <= 0) {
+        setScrollProgress(0);
+        return;
+      }
+      const next = Math.min(Math.max(window.scrollY / scrollable, 0), 1);
+      setScrollProgress((prev) => {
+        if (Math.abs(prev - next) < 0.01) return prev;
+        return next;
+      });
+    };
+
+    updateScroll();
+    window.addEventListener("scroll", updateScroll, { passive: true });
+    window.addEventListener("resize", updateScroll);
+
+    return () => {
+      window.removeEventListener("scroll", updateScroll);
+      window.removeEventListener("resize", updateScroll);
+    };
+  }, []);
+
+  const handleProgress = useCallback((index: number, value: number) => {
+    setSceneProgress((previous) => {
+      if (Math.abs(previous[index] - value) < 0.01) {
+        return previous;
+      }
+      const next = [...previous];
+      next[index] = value;
+      return next;
+    });
+  }, []);
+
+  const activeSceneIndex = useMemo(() => {
+    let maxIndex = 0;
+    let maxValue = -Infinity;
+    sceneProgress.forEach((value, idx) => {
+      if (value > maxValue) {
+        maxValue = value;
+        maxIndex = idx;
+      }
+    });
+    return maxIndex;
+  }, [sceneProgress]);
+
+  const activeScene = scenes[activeSceneIndex];
+
+  return (
+    <div className="relative min-h-screen">
+      <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-6 backdrop-blur-md md:px-12">
+        <div className="flex flex-col text-xs uppercase tracking-[0.4em] text-white/70 md:text-sm">
+          <span>Divanshu Garg</span>
+          <span className="text-white/40">The Explorer's Path</span>
+        </div>
+        <nav className="hidden items-center gap-8 text-xs uppercase tracking-[0.4em] text-white/50 md:flex">
+          <a href="#awakening-section" className="hover:text-white/80">
+            Origin
+          </a>
+          <a href="#sound-section" className="hover:text-white/80">
+            Harmonics
+          </a>
+          <a href="#valley-section" className="hover:text-white/80">
+            Frameworks
+          </a>
+          <a href="#city-section" className="hover:text-white/80">
+            Systems
+          </a>
+          <a href="#forge-section" className="hover:text-white/80">
+            Forge
+          </a>
+        </nav>
+      </header>
+
+      <aside className="fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-4 text-xs uppercase tracking-[0.35em] text-white/50 lg:flex">
+        {scenes.map((scene, index) => (
+          <div key={scene.id} className="flex items-center gap-3">
+            <span
+              className={`h-px w-10 transition-all ${
+                index === activeSceneIndex ? "bg-white" : "bg-white/20"
+              }`}
+            />
+            <span className={index === activeSceneIndex ? "text-white" : "text-white/35"}>{scene.mood}</span>
+          </div>
+        ))}
+      </aside>
+
+      <main className="flex flex-col">
+        {scenes.map((scene, index) => (
+          <SceneSection
+            key={scene.id}
+            scene={scene}
+            index={index}
+            isActive={activeSceneIndex === index}
+            onProgress={handleProgress}
+            nextTransition={scene.transitionTo}
+          />
+        ))}
       </main>
 
       <footer className="relative z-30 flex flex-col gap-12 bg-[#05030f] px-6 py-24 text-sm text-white/70 md:px-16">
