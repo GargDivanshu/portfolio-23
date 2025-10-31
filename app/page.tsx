@@ -462,7 +462,7 @@ function SceneSection({ scene, progress, isActive, nextTransition }: SceneSectio
   return (
     <section
       id={sectionId}
-      className="relative flex h-[100vh] min-h-[720px] w-screen flex-shrink-0 items-center justify-center overflow-hidden px-6 py-20 md:px-16"
+      className="relative flex h-screen min-h-[720px] w-screen shrink-0 items-center justify-center overflow-hidden px-6 py-20 md:px-16"
     >
       <div
         className="absolute inset-0"
@@ -528,7 +528,7 @@ function SceneSection({ scene, progress, isActive, nextTransition }: SceneSectio
           "radial-gradient(circle at 50% 100%, rgba(10, 9, 24, 0.7), transparent 70%)",
       }} />
       <div className="absolute bottom-[18vh] left-1/2 h-1 w-[180vw] -translate-x-1/2 rounded-full bg-white/10 blur-lg" />
-      <div className="absolute bottom-[15vh] left-0 right-0 h-28 bg-gradient-to-t from-[#05030f]/90 via-[#05030f]/40 to-transparent opacity-95" />
+      <div className="absolute bottom-[15vh] left-0 right-0 h-28 bg-linear-to-t from-[#05030f]/90 via-[#05030f]/40 to-transparent opacity-95" />
 
       <div className="relative z-10 flex w-full max-w-6xl flex-col gap-6 text-left md:flex-row md:items-end md:justify-between">
         <div className="flex max-w-2xl flex-col gap-4">
@@ -601,7 +601,7 @@ function ExplorerSprite({ highlight, lightCone, stridePhase, isActive }: Explore
         }}
       />
       <div
-        className="absolute bottom-[9.5rem] left-1/2 -translate-x-1/2 rounded-full"
+        className="absolute bottom-38 left-1/2 -translate-x-1/2 rounded-full"
         style={{
           width: "8rem",
           height: "8rem",
@@ -621,7 +621,7 @@ function ExplorerSprite({ highlight, lightCone, stridePhase, isActive }: Explore
           style={{ transform: strideOffset }}
         />
         <div
-          className="absolute bottom-12 left-1/2 h-14 w-6 -translate-x-1/2 rounded-full bg-gradient-to-b from-white/80 via-white/20 to-transparent"
+          className="absolute bottom-12 left-1/2 h-14 w-6 -translate-x-1/2 rounded-full bg-linear-to-b from-white/80 via-white/20 to-transparent"
           style={{
             boxShadow: `0 0 24px ${highlight}`,
           }}
@@ -692,7 +692,7 @@ export default function Home() {
         const relative = (scrollProgress - start) / sceneSegment;
         return Math.min(Math.max(relative, 0), 1);
       }),
-    [scrollProgress, sceneSegment, totalScenes]
+    [scrollProgress, sceneSegment]
   );
 
   const activeSceneIndex = useMemo(() => {
@@ -718,7 +718,7 @@ export default function Home() {
       <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-6 backdrop-blur-md md:px-12">
         <div className="flex flex-col text-xs uppercase tracking-[0.4em] text-white/70 md:text-sm">
           <span>Divanshu Garg</span>
-          <span className="text-white/40">The Explorer's Path</span>
+          <span className="text-white/40">The Explorer&apos;s Path</span>
         </div>
         <nav className="hidden items-center gap-8 text-xs uppercase tracking-[0.4em] text-white/50 md:flex">
           <button
@@ -811,7 +811,7 @@ export default function Home() {
             Forge
           </a>
         </nav>
-      </header>
+      </main>
 
       <aside className="fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-4 text-xs uppercase tracking-[0.35em] text-white/50 lg:flex">
         {scenes.map((scene, index) => (
@@ -826,22 +826,10 @@ export default function Home() {
         ))}
       </aside>
 
-      <main className="flex flex-col">
-        {scenes.map((scene, index) => (
-          <SceneSection
-            key={scene.id}
-            scene={scene}
-            index={index}
-            isActive={activeSceneIndex === index}
-            onProgress={handleProgress}
-            nextTransition={scene.transitionTo}
-          />
-        ))}
-      </main>
 
       <footer className="relative z-30 flex flex-col gap-12 bg-[#05030f] px-6 py-24 text-sm text-white/70 md:px-16">
         <div className="max-w-6xl space-y-6">
-          <h3 className="text-2xl font-semibold text-white md:text-3xl">Design Tokens · Explorer's Path</h3>
+          <h3 className="text-2xl font-semibold text-white md:text-3xl">Design Tokens · Explorer&apos;s Path</h3>
           <div className="grid gap-6 md:grid-cols-2">
             <div className="rounded-2xl border border-white/5 bg-white/5 p-6">
               <h4 className="text-sm uppercase tracking-[0.4em] text-white/50">Color</h4>
@@ -873,7 +861,7 @@ export default function Home() {
             Link scenes horizontally in Figma using Smart Animate, preserving scroll position for overlays. Attach parallax offsets as annotations (0.2× / 0.6× / 1×) and export layered PNG / SVG slices for implementation in Next.js + Framer Motion.
           </p>
           <p>
-            Include a documentation frame summarizing the narrative arc ("Curiosity → Discovery → Structure → Mastery → Resolution") and provide JSON-ready tokens for the engineering handoff.
+            Include a documentation frame summarizing the narrative arc (&quot;Curiosity → Discovery → Structure → Mastery → Resolution&quot;) and provide JSON-ready tokens for the engineering handoff.
           </p>
         </div>
       </footer>
