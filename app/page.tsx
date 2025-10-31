@@ -1,7 +1,8 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useMotionValue, useMotionValueEvent, useSpring, useTransform, useVelocity } from "framer-motion";
 
 type Decoration = {
   layer: "background" | "midground" | "foreground";
@@ -438,19 +439,55 @@ const easeInOutCosine = (t: number) => {
   return (1 - Math.cos(Math.PI * clamped)) / 2;
 };
 
+const parseRgba = (value: string) => {
+  const match = value.match(/rgba?\(([^)]+)\)/i);
+  if (!match) {
+    return null;
+  }
+  const parts = match[1]
+    .split(",")
+    .map((part) => part.trim())
+    .map((part, index) => (index < 3 ? parseFloat(part) : parseFloat(part)));
+  const [r, g, b, a] = [
+    Number.isFinite(parts[0]) ? parts[0] : 255,
+    Number.isFinite(parts[1]) ? parts[1] : 255,
+    Number.isFinite(parts[2]) ? parts[2] : 255,
+    Number.isFinite(parts[3]) ? parts[3] : 1,
+  ];
+  return { r, g, b, a } as const;
+};
+
+const mixRgba = (fromColor: string, toColor: string, t: number) => {
+  const start = parseRgba(fromColor);
+  const end = parseRgba(toColor);
+  if (!start || !end) {
+    return fromColor;
+  }
+  const clamped = Math.min(Math.max(t, 0), 1);
+  const mix = (a: number, b: number) => a + (b - a) * clamped;
+  const r = Math.round(mix(start.r, end.r));
+  const g = Math.round(mix(start.g, end.g));
+  const b = Math.round(mix(start.b, end.b));
+  const a = mix(start.a, end.a);
+  return `rgba(${r}, ${g}, ${b}, ${a.toFixed(3)})`;
+};
+
 type SceneSectionProps = {
   scene: SceneData;
-  progress: number;
+  parallaxOffset: number;
+  proximity: number;
   isActive: boolean;
 };
 
-function SceneSection({ scene, progress, isActive }: SceneSectionProps) {
+function SceneSection({ scene, parallaxOffset, proximity, isActive }: SceneSectionProps) {
   const sectionId = `${scene.id}-section`;
 
-  const backgroundShift = ((progress - 0.5) * -16).toFixed(3);
-  const midgroundShift = ((progress - 0.5) * -28).toFixed(3);
-  const foregroundShift = ((progress - 0.5) * -44).toFixed(3);
-  const stridePhase = Math.round(progress * 8) % 2;
+  const clampedOffset = Math.max(Math.min(parallaxOffset, 2.5), -2.5);
+  const backgroundShift = (-clampedOffset * 14).toFixed(3);
+  const midgroundShift = (-clampedOffset * 24).toFixed(3);
+  const foregroundShift = (-clampedOffset * 38).toFixed(3);
+  const decorationGlow = 0.45 + proximity * 0.55;
+  const horizonGlow = 0.4 + proximity * 0.35;
 
   return (
     <section
@@ -463,60 +500,109 @@ function SceneSection({ scene, progress, isActive }: SceneSectionProps) {
         <div className="absolute inset-0" style={{ transform: `translate3d(${backgroundShift}vw, 0, 0)` }}>
           {scene.decorations
             .filter((decoration) => decoration.layer === "background")
-            .map((decoration, decorationIndex) => (
-              <div
-                key={`${scene.id}-bg-${decorationIndex}`}
-                className={decoration.className ?? "mix-blend-screen opacity-70"}
-                style={{
-                  position: "absolute",
-                  ...decoration.style,
-                }}
-              />
-            ))}
+            .map((decoration, decorationIndex) => {
+              const baseOpacity =
+                typeof decoration.style.opacity === "number"
+                  ? decoration.style.opacity * decorationGlow
+                  : decorationGlow;
+              const existingFilter =
+                typeof decoration.style.filter === "string" && decoration.style.filter.length > 0
+                  ? `${decoration.style.filter} `
+                  : "";
+              return (
+                <div
+                  key={`${scene.id}-bg-${decorationIndex}`}
+                  className={decoration.className ?? "mix-blend-screen"}
+                  style={{
+                    position: "absolute",
+                    ...decoration.style,
+                    opacity: baseOpacity,
+                    filter: `${existingFilter}saturate(${(1 + proximity * 0.35).toFixed(3)})`,
+                  }}
+                />
+              );
+            })}
         </div>
         <div className="absolute inset-0" style={{ transform: `translate3d(${midgroundShift}vw, 0, 0)` }}>
           {scene.decorations
             .filter((decoration) => decoration.layer === "midground")
-            .map((decoration, decorationIndex) => (
-              <div
-                key={`${scene.id}-mg-${decorationIndex}`}
-                className={decoration.className ?? "mix-blend-screen opacity-80"}
-                style={{
-                  position: "absolute",
-                  ...decoration.style,
-                }}
-              />
-            ))}
+            .map((decoration, decorationIndex) => {
+              const baseOpacity =
+                typeof decoration.style.opacity === "number"
+                  ? decoration.style.opacity * (0.55 + proximity * 0.45)
+                  : 0.55 + proximity * 0.45;
+              const existingFilter =
+                typeof decoration.style.filter === "string" && decoration.style.filter.length > 0
+                  ? `${decoration.style.filter}, `
+                  : "";
+              return (
+                <div
+                  key={`${scene.id}-mg-${decorationIndex}`}
+                  className={decoration.className ?? "mix-blend-screen"}
+                  style={{
+                    position: "absolute",
+                    ...decoration.style,
+                    opacity: baseOpacity,
+                    filter: `${existingFilter}drop-shadow(0 0 ${(8 + proximity * 22).toFixed(2)}px ${scene.highlight})`,
+                  }}
+                />
+              );
+            })}
         </div>
         <div className="absolute inset-0" style={{ transform: `translate3d(${foregroundShift}vw, 0, 0)` }}>
           {scene.decorations
             .filter((decoration) => decoration.layer === "foreground")
-            .map((decoration, decorationIndex) => (
-              <div
-                key={`${scene.id}-fg-${decorationIndex}`}
-                className={decoration.className ?? "mix-blend-screen opacity-90"}
-                style={{
-                  position: "absolute",
-                  ...decoration.style,
-                }}
-              />
-            ))}
+            .map((decoration, decorationIndex) => {
+              const baseOpacity =
+                typeof decoration.style.opacity === "number"
+                  ? decoration.style.opacity * (0.6 + proximity * 0.4)
+                  : 0.6 + proximity * 0.4;
+              const existingShadow =
+                typeof decoration.style.boxShadow === "string" && decoration.style.boxShadow.length > 0
+                  ? `${decoration.style.boxShadow}, `
+                  : "";
+              return (
+                <div
+                  key={`${scene.id}-fg-${decorationIndex}`}
+                  className={decoration.className ?? "mix-blend-screen"}
+                  style={{
+                    position: "absolute",
+                    ...decoration.style,
+                    opacity: baseOpacity,
+                    boxShadow: `${existingShadow}0 0 ${(18 + proximity * 28).toFixed(2)}px ${scene.highlight}`,
+                  }}
+                />
+              );
+            })}
         </div>
       </div>
 
-      <div className="pointer-events-none absolute bottom-[20vh] left-0 right-0 h-32" style={{
-        background:
-          "radial-gradient(circle at 50% 100%, rgba(10, 9, 24, 0.7), transparent 70%)",
-      }} />
-      <div className="absolute bottom-[18vh] left-1/2 h-1 w-[180vw] -translate-x-1/2 rounded-full bg-white/10 blur-lg" />
-      <div className="absolute bottom-[15vh] left-0 right-0 h-28 bg-gradient-to-t from-[#05030f]/90 via-[#05030f]/40 to-transparent opacity-95" />
+      <div
+        className="pointer-events-none absolute bottom-[20vh] left-0 right-0 h-32"
+        style={{
+          background: "radial-gradient(circle at 50% 100%, rgba(10, 9, 24, 0.8), transparent 72%)",
+          opacity: horizonGlow,
+        }}
+      />
+      <div
+        className="absolute bottom-[18vh] left-1/2 h-1 w-[180vw] -translate-x-1/2 rounded-full bg-white/10 blur-lg"
+        style={{ opacity: 0.35 + proximity * 0.4 }}
+      />
+      <div
+        className="absolute bottom-[15vh] left-0 right-0 h-28 bg-gradient-to-t from-[#05030f]/90 via-[#05030f]/40 to-transparent opacity-95"
+        style={{ opacity: 0.7 + proximity * 0.25 }}
+      />
 
       <div className="relative z-10 flex w-full max-w-6xl flex-col gap-6 text-left md:flex-row md:items-end md:justify-between">
         <div className="flex max-w-2xl flex-col gap-4">
-          <p className="text-xs uppercase tracking-[0.45em] text-white/60 md:text-sm">{scene.mood}</p>
-          <h2 className="text-4xl font-semibold leading-tight md:text-6xl">{scene.title}</h2>
-          <p className="text-base text-white/80 md:text-lg">{scene.description}</p>
-          <p className="text-xs uppercase tracking-[0.35em] text-white/40">{scene.mantra}</p>
+          <p className={`text-xs uppercase tracking-[0.45em] md:text-sm ${isActive ? "text-white/80" : "text-white/50"}`}>
+            {scene.mood}
+          </p>
+          <h2 className={`text-4xl font-semibold leading-tight md:text-6xl ${isActive ? "text-white" : "text-white/80"}`}>
+            {scene.title}
+          </h2>
+          <p className={`text-base md:text-lg ${isActive ? "text-white/90" : "text-white/70"}`}>{scene.description}</p>
+          <p className={`text-xs uppercase tracking-[0.35em] ${isActive ? "text-white/50" : "text-white/30"}`}>{scene.mantra}</p>
         </div>
         <div className="flex flex-col items-start gap-2 text-sm text-white/70 md:items-end md:text-right">
           <span className="text-xs uppercase tracking-[0.35em] text-white/50">Motion Notes</span>
@@ -525,8 +611,6 @@ function SceneSection({ scene, progress, isActive }: SceneSectionProps) {
           <p>Smart animate easing · Ease in-out 400ms</p>
         </div>
       </div>
-
-      <ExplorerSprite highlight={scene.highlight} lightCone={scene.lightCone} stridePhase={stridePhase} isActive={isActive} />
 
       {scene.cta ? (
         <div className="relative z-20 mt-16 flex w-full max-w-2xl flex-col items-start gap-6 text-left md:items-center md:text-center">
@@ -550,31 +634,42 @@ function SceneSection({ scene, progress, isActive }: SceneSectionProps) {
 type ExplorerSpriteProps = {
   highlight: string;
   lightCone: string;
+  position: number;
   stridePhase: number;
-  isActive: boolean;
+  strideIntensity: number;
 };
 
-function ExplorerSprite({ highlight, lightCone, stridePhase, isActive }: ExplorerSpriteProps) {
-  const strideOffset = stridePhase === 0 ? "rotate(1.5deg)" : "rotate(-1.5deg)";
-  const staffGlowOpacity = isActive ? 0.85 : 0.4;
+function ExplorerSprite({ highlight, lightCone, position, stridePhase, strideIntensity }: ExplorerSpriteProps) {
+  const strideAngle = Math.sin(stridePhase * Math.PI * 2) * (2.2 + strideIntensity * 3.4);
+  const lateralDrift = Math.sin(stridePhase * Math.PI * 2 + Math.PI / 2) * strideIntensity * 0.8;
+  const footPulse = Math.max(0.75, 1 - Math.cos(stridePhase * Math.PI * 2) * 0.15 * strideIntensity);
+  const staffGlowOpacity = 0.45 + Math.min(strideIntensity, 0.9) * 0.45;
+  const haloOpacity = 0.35 + Math.min(strideIntensity, 0.8) * 0.45;
+  const lift = Math.sin(stridePhase * Math.PI * 2) * strideIntensity * 1.2;
 
   return (
-    <div className="pointer-events-none absolute bottom-[14vh] left-[12vw] flex flex-col items-center">
+    <div
+      className="pointer-events-none absolute bottom-[14vh] left-0 z-30 flex flex-col items-center will-change-transform"
+      style={{
+        transform: `translate3d(${position.toFixed(3)}vw, ${(-lift * 0.6).toFixed(3)}vh, 0)`,
+      }}
+    >
       <div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 rounded-full blur-3xl"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 rounded-full blur-3xl transition-opacity duration-200"
         style={{
           width: "26rem",
           height: "26rem",
           background: `radial-gradient(circle at 50% 100%, ${lightCone}, rgba(5, 3, 15, 0))`,
-          opacity: 0.5,
+          opacity: haloOpacity,
         }}
       />
       <div
-        className="absolute bottom-10 left-1/2 h-48 w-1 -translate-x-1/2 rounded-full"
+        className="absolute bottom-10 left-1/2 h-48 w-1 -translate-x-1/2 rounded-full transition-all duration-200"
         style={{
           background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0))",
-          boxShadow: `0 0 30px ${highlight}`,
+          boxShadow: `0 0 ${28 + strideIntensity * 24}px ${highlight}`,
           opacity: staffGlowOpacity,
+          transform: `translateX(${(lateralDrift * 0.4).toFixed(3)}rem)`,
         }}
       />
       <div
@@ -590,26 +685,28 @@ function ExplorerSprite({ highlight, lightCone, stridePhase, isActive }: Explore
       <div
         className="relative flex h-48 w-24 items-end justify-center"
         style={{
-          filter: "drop-shadow(0 0 32px rgba(138, 225, 255, 0.35))",
+          filter: `drop-shadow(0 0 ${18 + strideIntensity * 36}px rgba(138, 225, 255, ${0.25 + strideIntensity * 0.3}))`,
+          transform: `translateX(${(lateralDrift * 0.6).toFixed(3)}rem)`,
         }}
       >
         <div
-          className="absolute bottom-0 h-44 w-12 origin-bottom rounded-full bg-[#05030f] shadow-[0_0_30px_rgba(92,225,230,0.35)]"
-          style={{ transform: strideOffset }}
+          className="absolute bottom-0 h-44 w-12 origin-bottom rounded-full bg-[#05030f] shadow-[0_0_30px_rgba(92,225,230,0.35)] transition-transform duration-200"
+          style={{ transform: `rotate(${strideAngle.toFixed(3)}deg)` }}
         />
         <div
           className="absolute bottom-12 left-1/2 h-14 w-6 -translate-x-1/2 rounded-full bg-gradient-to-b from-white/80 via-white/20 to-transparent"
           style={{
-            boxShadow: `0 0 24px ${highlight}`,
+            boxShadow: `0 0 ${18 + strideIntensity * 20}px ${highlight}`,
           }}
         />
         <div
-          className="absolute bottom-1 left-1/2 -translate-x-1/2"
+          className="absolute bottom-1 left-1/2 -translate-x-1/2 transition-transform duration-200"
           style={{
             width: "3.6rem",
             height: "0.9rem",
             borderRadius: "50%",
             background: "radial-gradient(circle, rgba(10, 9, 24, 0.85), transparent 70%)",
+            transform: `scaleX(${footPulse.toFixed(3)})`,
           }}
         />
         <div
@@ -623,8 +720,8 @@ function ExplorerSprite({ highlight, lightCone, stridePhase, isActive }: Explore
           className="absolute bottom-24 left-[60%] h-20 w-2 rounded-full"
           style={{
             background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0))",
-            transform: "rotate(4deg)",
-            boxShadow: `0 0 16px ${highlight}`,
+            transform: `rotate(${(4 + strideIntensity * 1.5).toFixed(3)}deg)`,
+            boxShadow: `0 0 ${12 + strideIntensity * 18}px ${highlight}`,
           }}
         />
       </div>
@@ -635,19 +732,37 @@ function ExplorerSprite({ highlight, lightCone, stridePhase, isActive }: Explore
 export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const totalScenes = scenes.length;
-  const sceneSegment = 1 / totalScenes;
+  const worldSpan = Math.max(totalScenes - 1, 1);
+
+  const progressValue = useMotionValue(0);
+  const worldTarget = useTransform(progressValue, (value) => -value * worldSpan * 100);
+  const characterTarget = useTransform(progressValue, (value) => 18 + value * 24);
+  const bobTarget = useTransform(progressValue, (value) => Math.sin(value * Math.PI * 2) * 1.4);
+  const velocityValue = useVelocity(progressValue);
+  const speedValue = useTransform(velocityValue, (value) => Math.min(Math.abs(value), 2));
+
+  const worldX = useSpring(worldTarget, { stiffness: 90, damping: 24, mass: 0.85 });
+  const cameraYOffset = useSpring(bobTarget, { stiffness: 70, damping: 20, mass: 0.8 });
+  const characterXValue = useSpring(characterTarget, { stiffness: 200, damping: 28, mass: 0.6 });
+  const strideSpring = useSpring(speedValue, { stiffness: 130, damping: 22, mass: 0.7 });
+
+  const [worldTransform, setWorldTransform] = useState({ x: 0, y: 0 });
+  const [characterX, setCharacterX] = useState(18);
+  const [strideIntensity, setStrideIntensity] = useState(0);
+  const [stridePhase, setStridePhase] = useState(0);
+  const strideIntensityRef = useRef(0);
 
   useEffect(() => {
     const updateScroll = () => {
       const viewport = window.innerHeight;
-      const totalScrollable = viewport * (totalScenes - 1);
+      const totalScrollable = viewport * Math.max(totalScenes - 1, 1);
       if (totalScrollable <= 0) {
         setScrollProgress(0);
         return;
       }
       const next = Math.min(Math.max(window.scrollY / totalScrollable, 0), 1);
       setScrollProgress((prev) => {
-        if (Math.abs(prev - next) < 0.001) return prev;
+        if (Math.abs(prev - next) < 0.0005) return prev;
         return next;
       });
     };
@@ -662,23 +777,106 @@ export default function Home() {
     };
   }, [totalScenes]);
 
-  const sceneProgress = useMemo(
+  useEffect(() => {
+    progressValue.set(scrollProgress);
+  }, [progressValue, scrollProgress]);
+
+  useMotionValueEvent(worldX, "change", (value) => {
+    setWorldTransform((previous) => {
+      if (Math.abs(previous.x - value) < 0.01) {
+        return previous;
+      }
+      return { ...previous, x: value };
+    });
+  });
+
+  useMotionValueEvent(cameraYOffset, "change", (value) => {
+    setWorldTransform((previous) => {
+      if (Math.abs(previous.y - value) < 0.01) {
+        return previous;
+      }
+      return { ...previous, y: value };
+    });
+  });
+
+  useMotionValueEvent(characterXValue, "change", (value) => {
+    setCharacterX((prev) => {
+      if (Math.abs(prev - value) < 0.01) {
+        return prev;
+      }
+      return value;
+    });
+  });
+
+  useMotionValueEvent(strideSpring, "change", (value) => {
+    const clamped = Math.min(Math.max(Math.abs(value), 0), 1.6);
+    strideIntensityRef.current = clamped;
+    setStrideIntensity((prev) => {
+      if (Math.abs(prev - clamped) < 0.01) {
+        return prev;
+      }
+      return clamped;
+    });
+  });
+
+  useEffect(() => {
+    let frame = 0;
+    let lastTime = performance.now();
+    const animate = (time: number) => {
+      const delta = (time - lastTime) / 1000;
+      lastTime = time;
+      const intensity = strideIntensityRef.current;
+      setStridePhase((prev) => {
+        let next = prev;
+        if (intensity > 0.02) {
+          next = (prev + delta * (0.8 + intensity * 1.8)) % 1;
+        } else {
+          const eased = prev * Math.max(0, 1 - delta * 3.4);
+          next = eased;
+        }
+        if (Math.abs(next - prev) < 0.001) {
+          return prev;
+        }
+        return next;
+      });
+      frame = requestAnimationFrame(animate);
+    };
+
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  const worldPosition = scrollProgress * worldSpan;
+
+  const sceneParallaxOffsets = useMemo(
+    () => scenes.map((_, index) => worldPosition - index),
+    [worldPosition]
+  );
+
+  const sceneProximities = useMemo(
     () =>
       scenes.map((_, index) => {
-        const start = index * sceneSegment;
-        const relative = (scrollProgress - start) / sceneSegment;
-        return Math.min(Math.max(relative, 0), 1);
+        const distance = Math.abs(worldPosition - index);
+        const closeness = Math.max(0, 1 - Math.min(distance, 1));
+        return easeInOutCosine(closeness);
       }),
-    [scrollProgress, sceneSegment, totalScenes]
+    [worldPosition]
   );
 
   const activeSceneIndex = useMemo(() => {
-    const firstIncomplete = sceneProgress.findIndex((value) => value < 1);
-    return firstIncomplete === -1 ? totalScenes - 1 : firstIncomplete;
-  }, [sceneProgress, totalScenes]);
-
-  const activeScene = scenes[activeSceneIndex];
-  const translateX = useMemo(() => -scrollProgress * (totalScenes - 1) * 100, [scrollProgress, totalScenes]);
+    if (sceneProximities.length === 0) {
+      return 0;
+    }
+    let bestIndex = 0;
+    let bestValue = -Infinity;
+    sceneProximities.forEach((value, index) => {
+      if (value > bestValue) {
+        bestIndex = index;
+        bestValue = value;
+      }
+    });
+    return bestIndex;
+  }, [sceneProximities]);
 
   const backgroundState = useMemo(() => {
     const fallbackScene = scenes[0];
@@ -695,7 +893,7 @@ export default function Home() {
       } as const;
     }
 
-    const rawIndex = scrollProgress * maxIndex;
+    const rawIndex = Math.min(Math.max(worldPosition, 0), maxIndex);
     const baseIndex = Math.min(Math.max(Math.floor(rawIndex), 0), maxIndex);
     const nextIndex = Math.min(baseIndex + 1, maxIndex);
     const localT = Math.min(Math.max(rawIndex - baseIndex, 0), 1);
@@ -706,7 +904,19 @@ export default function Home() {
       next: scenes[nextIndex] ?? scenes[baseIndex] ?? fallbackScene,
       blend,
     } as const;
-  }, [scrollProgress, totalScenes]);
+  }, [totalScenes, worldPosition]);
+
+  const highlightColor = useMemo(() => {
+    const fallback = scenes[0]?.highlight ?? "rgba(180, 220, 255, 0.85)";
+    if (!backgroundState) return fallback;
+    return mixRgba(backgroundState.current.highlight, backgroundState.next.highlight, backgroundState.blend);
+  }, [backgroundState]);
+
+  const lightConeColor = useMemo(() => {
+    const fallback = scenes[0]?.lightCone ?? "rgba(138, 225, 255, 0.5)";
+    if (!backgroundState) return fallback;
+    return mixRgba(backgroundState.current.lightCone, backgroundState.next.lightCone, backgroundState.blend);
+  }, [backgroundState]);
 
   const handleJumpToScene = useCallback(
     (targetIndex: number) => {
@@ -717,6 +927,8 @@ export default function Home() {
     },
     [totalScenes]
   );
+
+  const progressPercent = Math.min(Math.max(scrollProgress * 100, 0), 100);
 
   return (
     <div className="relative min-h-screen">
@@ -761,6 +973,93 @@ export default function Home() {
         <div className="flex flex-col text-xs uppercase tracking-[0.4em] text-white/70 md:text-sm">
           <span>Divanshu Garg</span>
           <span className="text-white/40">The Explorer's Path</span>
+        </div>
+        <nav className="hidden items-center gap-8 text-xs uppercase tracking-[0.4em] text-white/50 md:flex">
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(0)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Origin
+          </button>
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(1)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Harmonics
+          </button>
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(2)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Frameworks
+          </button>
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(3)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Systems
+          </button>
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(4)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Forge
+          </button>
+        </nav>
+      </header>
+
+      <aside className="fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-4 text-xs uppercase tracking-[0.35em] text-white/50 lg:flex">
+        {scenes.map((scene, index) => (
+          <div key={scene.id} className="flex items-center gap-3">
+            <span
+              className="h-px transition-all"
+              style={{
+                width: `${8 + (sceneProximities[index] ?? 0) * 16}px`,
+                backgroundColor: `rgba(255,255,255, ${
+                  index === activeSceneIndex ? 0.9 : 0.2 + (sceneProximities[index] ?? 0) * 0.4
+                })`,
+              }}
+            />
+            <span className={index === activeSceneIndex ? "text-white" : "text-white/40"}>{scene.mood}</span>
+          </div>
+        ))}
+      </aside>
+
+      <main className="relative">
+        <div style={{ height: `${totalScenes * 100}vh` }}>
+          <div className="sticky top-0 h-screen overflow-hidden">
+            <div className="relative h-full">
+              <div
+                className="flex h-full transform-gpu will-change-transform"
+                style={{
+                  width: `${totalScenes * 100}vw`,
+                  transform: `translate3d(${worldTransform.x.toFixed(3)}vw, ${worldTransform.y.toFixed(3)}vh, 0)`,
+                }}
+              >
+                {scenes.map((scene, index) => (
+                  <SceneSection
+                    key={scene.id}
+                    scene={scene}
+                    parallaxOffset={sceneParallaxOffsets[index] ?? 0}
+                    proximity={sceneProximities[index] ?? 0}
+                    isActive={activeSceneIndex === index}
+                  />
+                ))}
+              </div>
+              <ExplorerSprite
+                highlight={highlightColor}
+                lightCone={lightConeColor}
+                position={characterX}
+                stridePhase={stridePhase}
+                strideIntensity={strideIntensity}
+              />
+            </div>
+          </div>
         </div>
         <nav className="hidden items-center gap-8 text-xs uppercase tracking-[0.4em] text-white/50 md:flex">
           <button
@@ -866,7 +1165,7 @@ export default function Home() {
                 <li>Scene 3 sky · #0A2A3F → #12A4C7</li>
                 <li>Scene 4 sky · #0A3D3F → #1DD0C0</li>
                 <li>Scene 5 sky · #F5E9C8 → #FFFFFF</li>
-                <li>Explorer glow · {activeScene.highlight}</li>
+                <li>Explorer glow · {highlightColor}</li>
               </ul>
             </div>
             <div className="rounded-2xl border border-white/5 bg-white/5 p-6">
@@ -909,7 +1208,7 @@ export default function Home() {
         <div className="relative h-1 w-full overflow-hidden rounded-full bg-white/10">
           <div
             className="absolute inset-y-0 left-0 rounded-full bg-white/80 transition-[width] duration-300"
-            style={{ width: `${Math.max(scrollProgress * 100, 4)}%` }}
+            style={{ width: `${Math.max(progressPercent, 4)}%` }}
           />
         </div>
       </div>
