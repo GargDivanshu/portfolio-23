@@ -1123,44 +1123,7 @@ export default function Home() {
         </nav>
       </main>
 
-      <footer className="relative z-30 flex flex-col gap-12 bg-[#05030f] px-6 py-24 text-sm text-white/70 md:px-16">
-        <div className="max-w-6xl space-y-6">
-          <h3 className="text-2xl font-semibold text-white md:text-3xl">Design Tokens · Explorer's Path</h3>
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="rounded-2xl border border-white/5 bg-white/5 p-6">
-              <h4 className="text-sm uppercase tracking-[0.4em] text-white/50">Color</h4>
-              <ul className="mt-4 space-y-2 text-sm">
-                <li>Scene 1 sky · #0C0B3A → #2B1E73</li>
-                <li>Scene 2 sky · #1C1A59 → #A8327A</li>
-                <li>Scene 3 sky · #0A2A3F → #12A4C7</li>
-                <li>Scene 4 sky · #0A3D3F → #1DD0C0</li>
-                <li>Scene 5 sky · #F5E9C8 → #FFFFFF</li>
-                <li>Explorer glow · {highlightColor}</li>
-              </ul>
-            </div>
-            <div className="rounded-2xl border border-white/5 bg-white/5 p-6">
-              <h4 className="text-sm uppercase tracking-[0.4em] text-white/50">Type & Motion</h4>
-              <ul className="mt-4 space-y-2 text-sm">
-                <li>Display · Barlow · 96 / 64 / 48 scaling</li>
-                <li>Body · Be Vietnam Pro · 18 / 20 leading 1.6</li>
-                <li>Parallax ratios · BG 0.2× · MG 0.6× · FG 1×</li>
-                <li>Scroll segments · 1920px scene width reference</li>
-                <li>Animation easing · Ease in-out 400ms</li>
-                <li>Grid system · 8px base rhythm</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div className="max-w-6xl space-y-4">
-          <h4 className="text-sm uppercase tracking-[0.4em] text-white/50">Prototype Notes</h4>
-          <p>
-            Link scenes horizontally in Figma using Smart Animate, preserving scroll position for overlays. Attach parallax offsets as annotations (0.2× / 0.6× / 1×) and export layered PNG / SVG slices for implementation in Next.js + Framer Motion.
-          </p>
-          <p>
-            Include a documentation frame summarizing the narrative arc ("Curiosity → Discovery → Structure → Mastery → Resolution") and provide JSON-ready tokens for the engineering handoff.
-          </p>
-        </div>
-      </footer>
+      
 
       <div className="fixed bottom-10 left-1/2 z-40 flex w-[280px] -translate-x-1/2 flex-col items-center gap-3 text-xs uppercase tracking-[0.35em] text-white/60">
         <div className="flex items-center gap-2">
