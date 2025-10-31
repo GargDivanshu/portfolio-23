@@ -835,6 +835,23 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <nav className="hidden items-center gap-8 text-xs uppercase tracking-[0.4em] text-white/50 md:flex">
+          <a href="#awakening-section" className="hover:text-white/80">
+            Origin
+          </a>
+          <a href="#sound-section" className="hover:text-white/80">
+            Harmonics
+          </a>
+          <a href="#valley-section" className="hover:text-white/80">
+            Frameworks
+          </a>
+          <a href="#city-section" className="hover:text-white/80">
+            Systems
+          </a>
+          <a href="#forge-section" className="hover:text-white/80">
+            Forge
+          </a>
+        </nav>
       </main>
 
       <footer className="relative z-30 flex flex-col gap-12 bg-[#05030f] px-6 py-24 text-sm text-white/70 md:px-16">
