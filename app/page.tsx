@@ -20,7 +20,6 @@ type SceneData = {
   highlight: string;
   lightCone: string;
   decorations: Decoration[];
-  transitionTo?: string;
   cta?: {
     label: string;
     href: string;
@@ -107,7 +106,6 @@ const scenes: SceneData[] = [
         },
       },
     ],
-    transitionTo: "linear-gradient(180deg, rgba(43, 30, 115, 0) 0%, rgba(106, 29, 116, 0.35) 100%)",
   },
   {
     id: "sound",
@@ -190,7 +188,6 @@ const scenes: SceneData[] = [
         },
       },
     ],
-    transitionTo: "linear-gradient(180deg, rgba(106, 29, 116, 0) 0%, rgba(18, 164, 199, 0.35) 100%)",
   },
   {
     id: "valley",
@@ -271,7 +268,6 @@ const scenes: SceneData[] = [
         },
       },
     ],
-    transitionTo: "linear-gradient(180deg, rgba(18, 164, 199, 0) 0%, rgba(29, 208, 192, 0.32) 100%)",
   },
   {
     id: "city",
@@ -354,7 +350,6 @@ const scenes: SceneData[] = [
         },
       },
     ],
-    transitionTo: "linear-gradient(180deg, rgba(29, 208, 192, 0) 0%, rgba(245, 233, 200, 0.32) 100%)",
   },
   {
     id: "forge",
@@ -438,14 +433,18 @@ const mantraSequence = [
   "Brand Engineer.",
 ];
 
+const easeInOutCosine = (t: number) => {
+  const clamped = Math.min(Math.max(t, 0), 1);
+  return (1 - Math.cos(Math.PI * clamped)) / 2;
+};
+
 type SceneSectionProps = {
   scene: SceneData;
   progress: number;
   isActive: boolean;
-  nextTransition?: string;
 };
 
-function SceneSection({ scene, progress, isActive, nextTransition }: SceneSectionProps) {
+function SceneSection({ scene, progress, isActive }: SceneSectionProps) {
   const sectionId = `${scene.id}-section`;
 
   const backgroundShift = ((progress - 0.5) * -16).toFixed(3);
@@ -453,29 +452,11 @@ function SceneSection({ scene, progress, isActive, nextTransition }: SceneSectio
   const foregroundShift = ((progress - 0.5) * -44).toFixed(3);
   const stridePhase = Math.round(progress * 8) % 2;
 
-  const gradientOverlay: CSSProperties | undefined = nextTransition
-    ? {
-        background: nextTransition,
-      }
-    : undefined;
-
   return (
     <section
       id={sectionId}
-      className="relative flex h-screen min-h-[720px] w-screen shrink-0 items-center justify-center overflow-hidden px-6 py-20 md:px-16"
+      className="relative flex h-[100vh] min-h-[720px] w-screen flex-shrink-0 items-center justify-center overflow-hidden px-6 py-20 md:px-16"
     >
-      <div
-        className="absolute inset-0"
-        style={{
-          background: scene.gradient,
-        }}
-      />
-      <div
-        className="absolute inset-0 opacity-80"
-        style={{
-          background: scene.ambient,
-        }}
-      />
       <div className="grid-overlay" />
 
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -528,7 +509,7 @@ function SceneSection({ scene, progress, isActive, nextTransition }: SceneSectio
           "radial-gradient(circle at 50% 100%, rgba(10, 9, 24, 0.7), transparent 70%)",
       }} />
       <div className="absolute bottom-[18vh] left-1/2 h-1 w-[180vw] -translate-x-1/2 rounded-full bg-white/10 blur-lg" />
-      <div className="absolute bottom-[15vh] left-0 right-0 h-28 bg-linear-to-t from-[#05030f]/90 via-[#05030f]/40 to-transparent opacity-95" />
+      <div className="absolute bottom-[15vh] left-0 right-0 h-28 bg-gradient-to-t from-[#05030f]/90 via-[#05030f]/40 to-transparent opacity-95" />
 
       <div className="relative z-10 flex w-full max-w-6xl flex-col gap-6 text-left md:flex-row md:items-end md:justify-between">
         <div className="flex max-w-2xl flex-col gap-4">
@@ -561,10 +542,6 @@ function SceneSection({ scene, progress, isActive, nextTransition }: SceneSectio
             <span aria-hidden className="text-white/70">→</span>
           </a>
         </div>
-      ) : null}
-
-      {gradientOverlay ? (
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64" style={gradientOverlay} />
       ) : null}
     </section>
   );
@@ -601,7 +578,7 @@ function ExplorerSprite({ highlight, lightCone, stridePhase, isActive }: Explore
         }}
       />
       <div
-        className="absolute bottom-38 left-1/2 -translate-x-1/2 rounded-full"
+        className="absolute bottom-[9.5rem] left-1/2 -translate-x-1/2 rounded-full"
         style={{
           width: "8rem",
           height: "8rem",
@@ -621,7 +598,7 @@ function ExplorerSprite({ highlight, lightCone, stridePhase, isActive }: Explore
           style={{ transform: strideOffset }}
         />
         <div
-          className="absolute bottom-12 left-1/2 h-14 w-6 -translate-x-1/2 rounded-full bg-linear-to-b from-white/80 via-white/20 to-transparent"
+          className="absolute bottom-12 left-1/2 h-14 w-6 -translate-x-1/2 rounded-full bg-gradient-to-b from-white/80 via-white/20 to-transparent"
           style={{
             boxShadow: `0 0 24px ${highlight}`,
           }}
@@ -692,7 +669,7 @@ export default function Home() {
         const relative = (scrollProgress - start) / sceneSegment;
         return Math.min(Math.max(relative, 0), 1);
       }),
-    [scrollProgress, sceneSegment]
+    [scrollProgress, sceneSegment, totalScenes]
   );
 
   const activeSceneIndex = useMemo(() => {
@@ -702,6 +679,34 @@ export default function Home() {
 
   const activeScene = scenes[activeSceneIndex];
   const translateX = useMemo(() => -scrollProgress * (totalScenes - 1) * 100, [scrollProgress, totalScenes]);
+
+  const backgroundState = useMemo(() => {
+    const fallbackScene = scenes[0];
+    if (!fallbackScene) {
+      return null;
+    }
+
+    const maxIndex = totalScenes - 1;
+    if (maxIndex <= 0) {
+      return {
+        current: fallbackScene,
+        next: fallbackScene,
+        blend: 0,
+      } as const;
+    }
+
+    const rawIndex = scrollProgress * maxIndex;
+    const baseIndex = Math.min(Math.max(Math.floor(rawIndex), 0), maxIndex);
+    const nextIndex = Math.min(baseIndex + 1, maxIndex);
+    const localT = Math.min(Math.max(rawIndex - baseIndex, 0), 1);
+    const blend = nextIndex === baseIndex ? 0 : easeInOutCosine(localT);
+
+    return {
+      current: scenes[baseIndex] ?? fallbackScene,
+      next: scenes[nextIndex] ?? scenes[baseIndex] ?? fallbackScene,
+      blend,
+    } as const;
+  }, [scrollProgress, totalScenes]);
 
   const handleJumpToScene = useCallback(
     (targetIndex: number) => {
@@ -715,10 +720,47 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen">
+      {backgroundState ? (
+        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+          <div
+            className="absolute inset-0 transform-gpu will-change-[opacity]"
+            style={{
+              opacity: 1 - backgroundState.blend,
+              background: backgroundState.current.gradient,
+              transform: "translateZ(0)",
+            }}
+          >
+            <div
+              className="absolute inset-0 opacity-80"
+              style={{
+                background: backgroundState.current.ambient,
+              }}
+            />
+          </div>
+          <div
+            className="absolute inset-0 transform-gpu will-change-[opacity]"
+            style={{
+              opacity: backgroundState.blend,
+              background: backgroundState.next.gradient,
+              transform: "translateZ(0)",
+            }}
+          >
+            <div
+              className="absolute inset-0 opacity-80"
+              style={{
+                background: backgroundState.next.ambient,
+              }}
+            />
+          </div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_60%)] opacity-35 mix-blend-screen" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_75%,rgba(255,255,255,0.05),transparent_65%)] opacity-25 mix-blend-screen" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,3,15,0.4),rgba(5,3,15,0.85))]" />
+        </div>
+      ) : null}
       <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-6 backdrop-blur-md md:px-12">
         <div className="flex flex-col text-xs uppercase tracking-[0.4em] text-white/70 md:text-sm">
           <span>Divanshu Garg</span>
-          <span className="text-white/40">The Explorer&apos;s Path</span>
+          <span className="text-white/40">The Explorer's Path</span>
         </div>
         <nav className="hidden items-center gap-8 text-xs uppercase tracking-[0.4em] text-white/50 md:flex">
           <button
@@ -788,7 +830,6 @@ export default function Home() {
                   scene={scene}
                   progress={sceneProgress[index] ?? 0}
                   isActive={activeSceneIndex === index}
-                  nextTransition={scene.transitionTo}
                 />
               ))}
             </div>
@@ -813,23 +854,9 @@ export default function Home() {
         </nav>
       </main>
 
-      <aside className="fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-4 text-xs uppercase tracking-[0.35em] text-white/50 lg:flex">
-        {scenes.map((scene, index) => (
-          <div key={scene.id} className="flex items-center gap-3">
-            <span
-              className={`h-px w-10 transition-all ${
-                index === activeSceneIndex ? "bg-white" : "bg-white/20"
-              }`}
-            />
-            <span className={index === activeSceneIndex ? "text-white" : "text-white/35"}>{scene.mood}</span>
-          </div>
-        ))}
-      </aside>
-
-
       <footer className="relative z-30 flex flex-col gap-12 bg-[#05030f] px-6 py-24 text-sm text-white/70 md:px-16">
         <div className="max-w-6xl space-y-6">
-          <h3 className="text-2xl font-semibold text-white md:text-3xl">Design Tokens · Explorer&apos;s Path</h3>
+          <h3 className="text-2xl font-semibold text-white md:text-3xl">Design Tokens · Explorer's Path</h3>
           <div className="grid gap-6 md:grid-cols-2">
             <div className="rounded-2xl border border-white/5 bg-white/5 p-6">
               <h4 className="text-sm uppercase tracking-[0.4em] text-white/50">Color</h4>
@@ -861,7 +888,7 @@ export default function Home() {
             Link scenes horizontally in Figma using Smart Animate, preserving scroll position for overlays. Attach parallax offsets as annotations (0.2× / 0.6× / 1×) and export layered PNG / SVG slices for implementation in Next.js + Framer Motion.
           </p>
           <p>
-            Include a documentation frame summarizing the narrative arc (&quot;Curiosity → Discovery → Structure → Mastery → Resolution&quot;) and provide JSON-ready tokens for the engineering handoff.
+            Include a documentation frame summarizing the narrative arc ("Curiosity → Discovery → Structure → Mastery → Resolution") and provide JSON-ready tokens for the engineering handoff.
           </p>
         </div>
       </footer>
