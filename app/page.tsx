@@ -1061,6 +1061,96 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <nav className="hidden items-center gap-8 text-xs uppercase tracking-[0.4em] text-white/50 md:flex">
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(0)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Origin
+          </button>
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(1)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Harmonics
+          </button>
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(2)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Frameworks
+          </button>
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(3)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Systems
+          </button>
+          <button
+            type="button"
+            onClick={() => handleJumpToScene(4)}
+            className="cursor-pointer hover:text-white/80"
+          >
+            Forge
+          </button>
+        </nav>
+      </header>
+
+      <aside className="fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-4 text-xs uppercase tracking-[0.35em] text-white/50 lg:flex">
+        {scenes.map((scene, index) => (
+          <div key={scene.id} className="flex items-center gap-3">
+            <span
+              className={`h-px w-10 transition-all ${
+                index === activeSceneIndex ? "bg-white" : "bg-white/20"
+              }`}
+            />
+            <span className={index === activeSceneIndex ? "text-white" : "text-white/35"}>{scene.mood}</span>
+          </div>
+        ))}
+      </aside>
+
+      <main className="relative">
+        <div style={{ height: `${totalScenes * 100}vh` }}>
+          <div className="sticky top-0 h-screen overflow-hidden">
+            <div
+              className="flex h-full transition-transform duration-300 ease-out will-change-transform"
+              style={{
+                width: `${totalScenes * 100}vw`,
+                transform: `translate3d(${translateX}vw, 0, 0)`,
+              }}
+            >
+              {scenes.map((scene, index) => (
+                <SceneSection
+                  key={scene.id}
+                  scene={scene}
+                  progress={sceneProgress[index] ?? 0}
+                  isActive={activeSceneIndex === index}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+        <nav className="hidden items-center gap-8 text-xs uppercase tracking-[0.4em] text-white/50 md:flex">
+          <a href="#awakening-section" className="hover:text-white/80">
+            Origin
+          </a>
+          <a href="#sound-section" className="hover:text-white/80">
+            Harmonics
+          </a>
+          <a href="#valley-section" className="hover:text-white/80">
+            Frameworks
+          </a>
+          <a href="#city-section" className="hover:text-white/80">
+            Systems
+          </a>
+          <a href="#forge-section" className="hover:text-white/80">
+            Forge
+          </a>
+        </nav>
       </main>
 
       <footer className="relative z-30 flex flex-col gap-12 bg-[#05030f] px-6 py-24 text-sm text-white/70 md:px-16">
