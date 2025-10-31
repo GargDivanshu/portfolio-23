@@ -479,13 +479,16 @@ type SceneSectionProps = {
   isActive: boolean;
 };
 
+const PARALLAX = { bg: 0.2, mg: 0.6, fg: 1.0 } as const;
+const BASE_SCENE_WIDTH = 1920;
+
 function SceneSection({ scene, parallaxOffset, proximity, isActive }: SceneSectionProps) {
   const sectionId = `${scene.id}-section`;
 
   const clampedOffset = Math.max(Math.min(parallaxOffset, 2.5), -2.5);
-  const backgroundShift = (-clampedOffset * 14).toFixed(3);
-  const midgroundShift = (-clampedOffset * 24).toFixed(3);
-  const foregroundShift = (-clampedOffset * 38).toFixed(3);
+  const bgShiftPx = -clampedOffset * BASE_SCENE_WIDTH * PARALLAX.bg;
+  const mgShiftPx = -clampedOffset * BASE_SCENE_WIDTH * PARALLAX.mg;
+  const fgShiftPx = -clampedOffset * BASE_SCENE_WIDTH * PARALLAX.fg;
   const decorationGlow = 0.45 + proximity * 0.55;
   const horizonGlow = 0.4 + proximity * 0.35;
 
@@ -497,7 +500,7 @@ function SceneSection({ scene, parallaxOffset, proximity, isActive }: SceneSecti
       <div className="grid-overlay" />
 
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0" style={{ transform: `translate3d(${backgroundShift}vw, 0, 0)` }}>
+        <div className="absolute inset-0" style={{ transform: `translate3d(${bgShiftPx}px, 0, 0)` }}>
           {scene.decorations
             .filter((decoration) => decoration.layer === "background")
             .map((decoration, decorationIndex) => {
@@ -518,12 +521,14 @@ function SceneSection({ scene, parallaxOffset, proximity, isActive }: SceneSecti
                     ...decoration.style,
                     opacity: baseOpacity,
                     filter: `${existingFilter}saturate(${(1 + proximity * 0.35).toFixed(3)})`,
+                    transition:
+                      "opacity 400ms cubic-bezier(0.45,0,0.55,1), filter 400ms cubic-bezier(0.45,0,0.55,1)",
                   }}
                 />
               );
             })}
         </div>
-        <div className="absolute inset-0" style={{ transform: `translate3d(${midgroundShift}vw, 0, 0)` }}>
+        <div className="absolute inset-0" style={{ transform: `translate3d(${mgShiftPx}px, 0, 0)` }}>
           {scene.decorations
             .filter((decoration) => decoration.layer === "midground")
             .map((decoration, decorationIndex) => {
@@ -544,12 +549,14 @@ function SceneSection({ scene, parallaxOffset, proximity, isActive }: SceneSecti
                     ...decoration.style,
                     opacity: baseOpacity,
                     filter: `${existingFilter}drop-shadow(0 0 ${(8 + proximity * 22).toFixed(2)}px ${scene.highlight})`,
+                    transition:
+                      "opacity 400ms cubic-bezier(0.45,0,0.55,1), filter 400ms cubic-bezier(0.45,0,0.55,1)",
                   }}
                 />
               );
             })}
         </div>
-        <div className="absolute inset-0" style={{ transform: `translate3d(${foregroundShift}vw, 0, 0)` }}>
+        <div className="absolute inset-0" style={{ transform: `translate3d(${fgShiftPx}px, 0, 0)` }}>
           {scene.decorations
             .filter((decoration) => decoration.layer === "foreground")
             .map((decoration, decorationIndex) => {
@@ -570,6 +577,8 @@ function SceneSection({ scene, parallaxOffset, proximity, isActive }: SceneSecti
                     ...decoration.style,
                     opacity: baseOpacity,
                     boxShadow: `${existingShadow}0 0 ${(18 + proximity * 28).toFixed(2)}px ${scene.highlight}`,
+                    transition:
+                      "opacity 400ms cubic-bezier(0.45,0,0.55,1), box-shadow 400ms cubic-bezier(0.45,0,0.55,1)",
                   }}
                 />
               );
@@ -582,15 +591,22 @@ function SceneSection({ scene, parallaxOffset, proximity, isActive }: SceneSecti
         style={{
           background: "radial-gradient(circle at 50% 100%, rgba(10, 9, 24, 0.8), transparent 72%)",
           opacity: horizonGlow,
+          transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1), filter 400ms cubic-bezier(0.45,0,0.55,1)",
         }}
       />
       <div
         className="absolute bottom-[18vh] left-1/2 h-1 w-[180vw] -translate-x-1/2 rounded-full bg-white/10 blur-lg"
-        style={{ opacity: 0.35 + proximity * 0.4 }}
+        style={{
+          opacity: 0.35 + proximity * 0.4,
+          transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1), filter 400ms cubic-bezier(0.45,0,0.55,1)",
+        }}
       />
       <div
         className="absolute bottom-[15vh] left-0 right-0 h-28 bg-gradient-to-t from-[#05030f]/90 via-[#05030f]/40 to-transparent opacity-95"
-        style={{ opacity: 0.7 + proximity * 0.25 }}
+        style={{
+          opacity: 0.7 + proximity * 0.25,
+          transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1), filter 400ms cubic-bezier(0.45,0,0.55,1)",
+        }}
       />
 
       <div className="relative z-10 flex w-full max-w-6xl flex-col gap-6 text-left md:flex-row md:items-end md:justify-between">
@@ -603,12 +619,6 @@ function SceneSection({ scene, parallaxOffset, proximity, isActive }: SceneSecti
           </h2>
           <p className={`text-base md:text-lg ${isActive ? "text-white/90" : "text-white/70"}`}>{scene.description}</p>
           <p className={`text-xs uppercase tracking-[0.35em] ${isActive ? "text-white/50" : "text-white/30"}`}>{scene.mantra}</p>
-        </div>
-        <div className="flex flex-col items-start gap-2 text-sm text-white/70 md:items-end md:text-right">
-          <span className="text-xs uppercase tracking-[0.35em] text-white/50">Motion Notes</span>
-          <p>Parallax ratios · BG 0.2× · MG 0.6× · FG 1×</p>
-          <p>Scroll window · 1920px width equivalent</p>
-          <p>Smart animate easing · Ease in-out 400ms</p>
         </div>
       </div>
 
@@ -661,6 +671,7 @@ function ExplorerSprite({ highlight, lightCone, position, stridePhase, strideInt
           height: "26rem",
           background: `radial-gradient(circle at 50% 100%, ${lightCone}, rgba(5, 3, 15, 0))`,
           opacity: haloOpacity,
+          transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1), filter 400ms cubic-bezier(0.45,0,0.55,1)",
         }}
       />
       <div
@@ -670,6 +681,8 @@ function ExplorerSprite({ highlight, lightCone, position, stridePhase, strideInt
           boxShadow: `0 0 ${28 + strideIntensity * 24}px ${highlight}`,
           opacity: staffGlowOpacity,
           transform: `translateX(${(lateralDrift * 0.4).toFixed(3)}rem)`,
+          transition:
+            "opacity 400ms cubic-bezier(0.45,0,0.55,1), box-shadow 400ms cubic-bezier(0.45,0,0.55,1)",
         }}
       />
       <div
@@ -680,6 +693,7 @@ function ExplorerSprite({ highlight, lightCone, position, stridePhase, strideInt
           background: `radial-gradient(circle, ${highlight}, rgba(255, 255, 255, 0))`,
           filter: "blur(16px)",
           opacity: staffGlowOpacity,
+          transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1), filter 400ms cubic-bezier(0.45,0,0.55,1)",
         }}
       />
       <div
@@ -687,6 +701,7 @@ function ExplorerSprite({ highlight, lightCone, position, stridePhase, strideInt
         style={{
           filter: `drop-shadow(0 0 ${18 + strideIntensity * 36}px rgba(138, 225, 255, ${0.25 + strideIntensity * 0.3}))`,
           transform: `translateX(${(lateralDrift * 0.6).toFixed(3)}rem)`,
+          transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1), filter 400ms cubic-bezier(0.45,0,0.55,1)",
         }}
       >
         <div
@@ -697,6 +712,8 @@ function ExplorerSprite({ highlight, lightCone, position, stridePhase, strideInt
           className="absolute bottom-12 left-1/2 h-14 w-6 -translate-x-1/2 rounded-full bg-gradient-to-b from-white/80 via-white/20 to-transparent"
           style={{
             boxShadow: `0 0 ${18 + strideIntensity * 20}px ${highlight}`,
+            transition:
+              "opacity 400ms cubic-bezier(0.45,0,0.55,1), box-shadow 400ms cubic-bezier(0.45,0,0.55,1)",
           }}
         />
         <div
@@ -722,6 +739,8 @@ function ExplorerSprite({ highlight, lightCone, position, stridePhase, strideInt
             background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0))",
             transform: `rotate(${(4 + strideIntensity * 1.5).toFixed(3)}deg)`,
             boxShadow: `0 0 ${12 + strideIntensity * 18}px ${highlight}`,
+            transition:
+              "opacity 400ms cubic-bezier(0.45,0,0.55,1), box-shadow 400ms cubic-bezier(0.45,0,0.55,1)",
           }}
         />
       </div>
@@ -940,12 +959,14 @@ export default function Home() {
               opacity: 1 - backgroundState.blend,
               background: backgroundState.current.gradient,
               transform: "translateZ(0)",
+              transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1)",
             }}
           >
             <div
               className="absolute inset-0 opacity-80"
               style={{
                 background: backgroundState.current.ambient,
+                transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1)",
               }}
             />
           </div>
@@ -955,12 +976,14 @@ export default function Home() {
               opacity: backgroundState.blend,
               background: backgroundState.next.gradient,
               transform: "translateZ(0)",
+              transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1)",
             }}
           >
             <div
               className="absolute inset-0 opacity-80"
               style={{
                 background: backgroundState.next.ambient,
+                transition: "opacity 400ms cubic-bezier(0.45,0,0.55,1)",
               }}
             />
           </div>
@@ -1038,7 +1061,7 @@ export default function Home() {
                 className="flex h-full transform-gpu will-change-transform"
                 style={{
                   width: `${totalScenes * 100}vw`,
-                  transform: `translate3d(${worldTransform.x.toFixed(3)}vw, ${worldTransform.y.toFixed(3)}vh, 0)`,
+                  transform: `translate3d(${worldTransform.x.toFixed(3)}vw, ${worldTransform.y.toFixed(3)}vh, 0)`
                 }}
               >
                 {scenes.map((scene, index) => (
@@ -1097,59 +1120,6 @@ export default function Home() {
           >
             Forge
           </button>
-        </nav>
-      </header>
-
-      <aside className="fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-4 text-xs uppercase tracking-[0.35em] text-white/50 lg:flex">
-        {scenes.map((scene, index) => (
-          <div key={scene.id} className="flex items-center gap-3">
-            <span
-              className={`h-px w-10 transition-all ${
-                index === activeSceneIndex ? "bg-white" : "bg-white/20"
-              }`}
-            />
-            <span className={index === activeSceneIndex ? "text-white" : "text-white/35"}>{scene.mood}</span>
-          </div>
-        ))}
-      </aside>
-
-      <main className="relative">
-        <div style={{ height: `${totalScenes * 100}vh` }}>
-          <div className="sticky top-0 h-screen overflow-hidden">
-            <div
-              className="flex h-full transition-transform duration-300 ease-out will-change-transform"
-              style={{
-                width: `${totalScenes * 100}vw`,
-                transform: `translate3d(${translateX}vw, 0, 0)`,
-              }}
-            >
-              {scenes.map((scene, index) => (
-                <SceneSection
-                  key={scene.id}
-                  scene={scene}
-                  progress={sceneProgress[index] ?? 0}
-                  isActive={activeSceneIndex === index}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-        <nav className="hidden items-center gap-8 text-xs uppercase tracking-[0.4em] text-white/50 md:flex">
-          <a href="#awakening-section" className="hover:text-white/80">
-            Origin
-          </a>
-          <a href="#sound-section" className="hover:text-white/80">
-            Harmonics
-          </a>
-          <a href="#valley-section" className="hover:text-white/80">
-            Frameworks
-          </a>
-          <a href="#city-section" className="hover:text-white/80">
-            Systems
-          </a>
-          <a href="#forge-section" className="hover:text-white/80">
-            Forge
-          </a>
         </nav>
       </main>
 
